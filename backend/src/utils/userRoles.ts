@@ -1,0 +1,5 @@
+export const USER_ROLES = {
+  ADMIN: "ROLE_ADMIN",
+  MODER: "ROLE_MODERATOR",
+  USER: "ROLE_USER",
+};
