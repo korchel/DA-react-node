@@ -117,7 +117,7 @@ export const postFile = async (
         mimetype,
         available_for
       );
-      res.sendStatus(STATUS.CREATED_201);
+      res.status(STATUS.CREATED_201).json({message: `File ${filename} has been uploaded!`});
     } else {
       res.sendStatus(STATUS.FORBIDDEN_403);
     }

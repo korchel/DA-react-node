@@ -19,19 +19,20 @@ import { useGetUsersQuery as getUsers } from '../../../store/usersApi';
 import { routes } from '../../../routes';
 import { closeModal } from '../../../store/modalSlice';
 import { createDocFormSchema, IDocForm } from './docFormSchema';
-import { ISelectOption } from '../../../interfaces';
 import { useEffect } from 'react';
+import { DOCUMENT_TYPES } from '../../../constants';
+import { IDocTypeSelectOption } from './docFormSchema';
 
 export const CreateDocument = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const selectTypeOptions: ISelectOption[] = [
-    { value: 1, label: t('documents.type.NOTE') },
-    { value: 2, label: t('documents.type.REPORT') },
-    { value: 3, label: t('documents.type.PRESENTATION') },
-    { value: 4, label: t('documents.type.ARTICLE') },
+  const selectTypeOptions: IDocTypeSelectOption[] = [
+    { value: DOCUMENT_TYPES.NOTE, label: t('documents.type.NOTE') },
+    { value: DOCUMENT_TYPES.REPORT, label: t('documents.type.REPORT') },
+    { value: DOCUMENT_TYPES.PRESENTATION, label: t('documents.type.PRESENTATION') },
+    { value: DOCUMENT_TYPES.ARTICLE, label: t('documents.type.ARTICLE') },
   ];
 
   const {
@@ -95,12 +96,12 @@ export const CreateDocument = () => {
       />
       <Controller
         control={control}
-        name='type_id'
+        name='type'
         render={({ field }) => (
           <SelectComponent
             {...field}
             placeholder={t('documents.modal.form.placeholders.type')}
-            error={errors.type_id}
+            error={errors.type}
             label={t('documents.modal.form.labels.type')}
             onChange={field.onChange}
             selectOptions={selectTypeOptions}

@@ -8,13 +8,14 @@ import { useGetDocsQuery as getDocs } from '../../store/docsApi';
 import { openModal } from '../../store/modalSlice';
 import { Spinner } from '../../components/ui/icons';
 import { TableContainer } from '../../components/TableContainer';
+import { convirtDate } from '../../utils/convirtDate';
 
 export const DocumentsPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n  } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { data: documents, isLoading } = getDocs();
-
+  console.log(documents)
   const tableColumns = [
     {
       label: t('documents.tableHeader.number'),
@@ -53,22 +54,20 @@ export const DocumentsPage = () => {
     },
   ];
 
-  const tableData = documents?.map((document) => ({
-    id: document.id,
-    data: {
-      number: document.number,
-      name: document.title,
-      author: document.author,
-      type: t(`documents.type.${document.type.type}`),
-      content: document.content,
-      creationDate: document.creation_date
-        ? new Date(document.creation_date)
-        : t('documents.noData'),
-      updateDate: document.update_date
-        ? new Date(document.update_date)
-        : t('documents.noData'),
-    },
-  }));
+  const tableData = documents?.map((document) => {
+    const { id, number, title, author, type, content, creation_date, update_date } = document;
+    return {id,
+      data: {
+        number: number,
+        name: title,
+        author: author,
+        type: t(`documents.type.${type}`),
+        content: content,
+        creation_date: convirtDate(creation_date, i18n.language),
+        update_date: convirtDate(update_date, i18n.language),
+      },
+    }
+  });
 
   const handleCreate = () => {
     dispatch(openModal({ type: 'createDocument', open: true }));

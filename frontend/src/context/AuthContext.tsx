@@ -28,7 +28,7 @@ const initialContext = {
 export const AuthContext = createContext<IAuthContext>(initialContext);
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const [currentUser, setCurrentUser] = useState<ICurrentUser>({
     role: null,
     id: null,

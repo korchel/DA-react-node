@@ -16,9 +16,9 @@ export interface IFileViewModel {
   filetype: string;
   author: string;
   available_for: number[];
-  public_file: boolean; //TODO change in frontend
-  creation_date: string; //TODO change in frontend
-  update_date: string; //TODO change in frontend
+  public_file: boolean;
+  creation_date: string;
+  update_date: string;
 }
 
 export interface IFileFormdataModel {

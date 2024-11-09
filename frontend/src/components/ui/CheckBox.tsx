@@ -25,7 +25,7 @@ export const CheckBox = forwardRef(
     return (
       <label
         htmlFor={label}
-        className='flex gap-1 justify-between items-center'
+        className='flex gap-1 justify-between items-center cursor-pointer'
       >
         {label}
         <input

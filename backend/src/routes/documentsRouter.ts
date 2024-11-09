@@ -7,18 +7,15 @@ import {
   postDocument,
   updateDocument,
 } from "../controllers/documentsController";
-import { isAuthor } from "../middleWare/isAuthor";
 
 export const documentsRouter = Router();
 
-documentsRouter.get("/", getDocuments); //done
+documentsRouter.get("/", getDocuments);
 
-// /for-users path is not used
+documentsRouter.post("/", postDocument);
 
-documentsRouter.post("/", postDocument); //done
+documentsRouter.get("/:id", getDocument);
 
-documentsRouter.get("/:id", getDocument); //done
+documentsRouter.delete("/:id", deleteDocument);
 
-documentsRouter.delete("/:id", deleteDocument); //done
-
-documentsRouter.put("/:id", updateDocument); //done
+documentsRouter.put("/:id", updateDocument);

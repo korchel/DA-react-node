@@ -59,7 +59,8 @@ export const UploadFile = () => {
       .then(() => {
         toast.success(t('files.modal.upload.toast.success'));
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error)
         toast.error(t('files.modal.upload.toast.error'));
       });
     dispatch(closeModal());

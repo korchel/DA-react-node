@@ -5,6 +5,13 @@ CREATE TABLE IF NOT EXISTS roles
 INSERT INTO roles (role_name)
   VALUES ('ROLE_USER'), ('ROLE_MODERATOR'), ('ROLE_ADMIN');
 
+CREATE TABLE IF NOT EXISTS document_types
+  (id SERIAL PRIMARY KEY,
+  type_name TEXT UNIQUE NOT NULL);
+
+INSERT INTO roles (role_name)
+  VALUES ('NOTE'), ('REPORT'), ('PRESENTATION'), ('ARTICLE');
+
 CREATE TABLE IF NOT EXISTS users
   (id SERIAL PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
@@ -26,7 +33,8 @@ CREATE TABLE IF NOT EXISTS documents
   public_document BOOLEAN,
   creation_date TIMESTAMP NOT NULL,
   update_date TIMESTAMP NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES users (id));
+  FOREIGN KEY (author_id) REFERENCES users (id),
+  FOREIGN KEY (type) REFERENCES document_types (type_name));
 
 CREATE TABLE IF NOT EXISTS files
   (id SERIAL PRIMARY KEY,

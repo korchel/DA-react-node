@@ -22,8 +22,8 @@ import {
 import { useGetUsersQuery as getUsers } from '../../../store/usersApi';
 import { routes } from '../../../routes';
 import { closeModal, getCurrentDataId } from '../../../store/modalSlice';
-import { editDocFormSchema, IDocForm } from './docFormSchema';
-import { ISelectOption } from '../../../interfaces';
+import { editDocFormSchema, IDocForm, IDocTypeSelectOption } from './docFormSchema';
+import { DOCUMENT_TYPES } from '../../../constants';
 
 export const EditDocument = () => {
   const { t } = useTranslation();
@@ -35,11 +35,11 @@ export const EditDocument = () => {
   const { data: doc } = getDoc(id);
   const [editDoc] = useEditDocMutation();
 
-  const selectTypeOptions: ISelectOption[] = [
-    { value: 1, label: t('documents.type.NOTE') },
-    { value: 2, label: t('documents.type.REPORT') },
-    { value: 3, label: t('documents.type.PRESENTATION') },
-    { value: 4, label: t('documents.type.ARTICLE') },
+  const selectTypeOptions: IDocTypeSelectOption[] = [
+    { value: DOCUMENT_TYPES.NOTE, label: t('documents.type.NOTE') },
+    { value: DOCUMENT_TYPES.REPORT, label: t('documents.type.REPORT') },
+    { value: DOCUMENT_TYPES.PRESENTATION, label: t('documents.type.PRESENTATION') },
+    { value: DOCUMENT_TYPES.ARTICLE, label: t('documents.type.ARTICLE') },
   ];
 
   const defaultValues = {
@@ -47,7 +47,7 @@ export const EditDocument = () => {
     number: doc?.number,
     content: doc?.content,
     author: doc?.author,
-    type_id: doc?.type.id,
+    type: doc?.type,
     available_for: doc?.available_for,
     public_document: !!doc?.public_document,
   };
@@ -107,11 +107,11 @@ export const EditDocument = () => {
       />
       <Controller
         control={control}
-        name='type_id'
+        name='type'
         render={({ field }) => (
           <SelectComponent
             {...field}
-            error={errors.type_id}
+            error={errors.type}
             placeholder={t('documents.modal.form.placeholders.type')}
             onChange={field.onChange}
             label={t('documents.modal.form.labels.type')}

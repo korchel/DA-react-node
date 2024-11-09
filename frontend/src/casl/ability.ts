@@ -5,7 +5,7 @@ import {
   PureAbility,
 } from '@casl/ability';
 import { RoleName } from '../interfaces';
-import { USER_ROLES } from '../userRoles';
+import { USER_ROLES } from '../constants';
 
 type User = {
   role: RoleName | null;

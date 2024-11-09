@@ -10,11 +10,12 @@ import { Card, ButtonComponent, ActionButton } from '../../components/ui';
 import { routes } from '../../routes';
 import { useAuth } from '../../context/AuthContext';
 import { defineAbilityFor } from '../../casl/ability';
+import { convirtDate } from '../../utils/convirtDate';
 
 const FileDetailsPage = () => {
   const { id } = useParams();
   const { currentUser, isAuthenticated } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
 
   const { data: file, isLoading } = getFile(id);
@@ -34,12 +35,25 @@ const FileDetailsPage = () => {
 
   const handleDownload = (event, id) => {
     event.stopPropagation();
-    window.open(routes.fileDownloadPath(id), '_blank');
+    fetch(routes.fileDownloadPath(id))
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        console.log(blob)
+        a.href = url;
+        a.download = file?.filename as string;
+        a.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.log(error)
+      });
   };
 
   const handleOverview = (event, id) => {
     event.stopPropagation();
-    window.open(routes.viewFilePath(id), '_blank');
+    window.open(routes.fileDownloadPath(id), '_blank');
   };
 
   if (isLoading) {
@@ -70,7 +84,7 @@ const FileDetailsPage = () => {
             <span className='font-bold'>
               {t('files.detailsPage.creationDate')}
             </span>
-            {file?.creation_date}
+            {file && convirtDate(file?.creation_date, i18n.language)}
           </div>
         </div>
         <div className='flex flex-col gap-4'>

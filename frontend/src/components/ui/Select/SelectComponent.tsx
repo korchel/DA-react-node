@@ -10,11 +10,11 @@ import clsx from 'clsx';
 import { ForwardedRef, forwardRef } from 'react';
 
 interface ISelectInputProps {
-  onChange: (option: number) => void;
+  onChange: (option: string | number) => void;
   placeholder?: string;
   selectOptions: ISelectOption[];
   error?: FieldError;
-  value: number;
+  value: string | number;
   label?: string;
   required?: boolean;
   className?: string;

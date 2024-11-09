@@ -4,7 +4,7 @@ export interface IDocForm {
   title: string;
   number: number;
   content: string;
-  type_id: number;
+  type: string;
   available_for?: number[] | undefined;
   public_document: boolean;
 }
@@ -20,7 +20,7 @@ export const createDocFormSchema: ZodType<IDocForm> = z.object({
     message: 'Обязательное поле',
   }),
   content: z.string().trim().min(1, { message: 'Обязательное поле' }),
-  type_id: z.number({
+  type: z.string({
     required_error: 'Обязательное поле',
   }),
   available_for: z.array(z.number()).optional(),
@@ -38,9 +38,14 @@ export const editDocFormSchema: ZodType<IDocForm> = z.object({
     message: 'Обязательное поле',
   }),
   content: z.string().trim().min(1, { message: 'Обязательное поле' }),
-  type_id: z.number({
+  type: z.string({
     required_error: 'Обязательное поле',
   }),
   available_for: z.array(z.number()).optional(),
   public_document: z.boolean(),
 });
+
+export interface IDocTypeSelectOption {
+  label: string;
+  value: string;
+}

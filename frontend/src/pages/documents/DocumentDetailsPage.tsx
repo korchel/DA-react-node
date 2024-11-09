@@ -9,11 +9,12 @@ import { Spinner } from '../../components/ui/icons';
 import { useAuth } from '../../context/AuthContext';
 import { defineAbilityFor } from '../../casl/ability';
 import { Can } from '@casl/react';
+import { convirtDate } from '../../utils/convirtDate';
 
 const DocumentDetailsPage = () => {
   const { id } = useParams();
   const { currentUser, isAuthenticated } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
 
   const { data: doc, isLoading } = getDoc(id);
@@ -52,7 +53,7 @@ const DocumentDetailsPage = () => {
         </div>
         <div>
           <span className='font-bold'>{t('documents.detailsPage.type')}</span>
-          {doc && t(`documents.type.${doc.type.type}`)}
+          {doc && t(`documents.type.${doc.type}`)}
         </div>
         <div className='font-bold'>{t('documents.detailsPage.content')}</div>
         <div className='overflow-y-auto h-72 my-2'>{doc?.content}</div>
@@ -60,13 +61,13 @@ const DocumentDetailsPage = () => {
           <span className='font-bold'>
             {t('documents.detailsPage.creationDate')}
           </span>
-          {doc?.creation_date}
+          {convirtDate(doc?.creation_date, i18n.language)}
         </div>
         <div>
           <span className='font-bold'>
             {t('documents.detailsPage.updateDate')}
           </span>
-          {doc?.update_date}
+          {convirtDate(doc?.update_date, i18n.language)}
         </div>
       </Card.Body>
       <Card.Footer>

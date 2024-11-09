@@ -6,7 +6,6 @@ export interface IDocumentType {
 }
 
 export interface IDocumentInputModel {
-  //TODO change in frontend
   title: string;
   number: number;
   type_id: number;
@@ -19,11 +18,11 @@ export interface IDocumentViewModel {
   id: number;
   title: string;
   number: number;
-  author: string; // IUser
+  author: string;
   type: IDocumentType;
   content: string;
-  creationDate: string;
-  updateDate: string;
+  creation_date: string;
+  update_date: string;
   public_document: boolean;
   available_for: number[];
 }
@@ -32,11 +31,11 @@ export interface IDocument {
   id: number;
   title: string;
   number: number;
-  authorId: number; // IUser
+  authorId: number;
   type_id: IDocumentType;
   content: string;
-  creationDate?: string;
-  updateDate?: string;
+  creation_date: string;
+  update_date: string;
   public_document: boolean;
   available_for: number[];
 }

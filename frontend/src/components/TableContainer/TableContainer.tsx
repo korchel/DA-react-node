@@ -60,7 +60,7 @@ export const TableContainer = ({
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize, setPageSize] = useState(10);
   const pages = chunk(sortField ? sortedData : filteredTable, pageSize);
   const numberOfPages = pages.length || 1;
   const handleChangePage = (page: number) => {

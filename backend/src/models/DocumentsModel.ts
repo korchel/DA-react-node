@@ -55,8 +55,8 @@ export class DocumentsModel implements IDocumentsModel {
           author: username,
           type: doc.type,
           content: doc.content,
-          creationDate: doc.creation_date,
-          updateDate: doc.update_date,
+          creation_date: doc.creation_date,
+          update_date: doc.update_date,
           public_document: doc.public_document,
           available_for: doc.available_for,
         };
@@ -82,8 +82,8 @@ export class DocumentsModel implements IDocumentsModel {
           author: username,
           type: doc.type,
           content: doc.content,
-          creationDate: doc.creation_date,
-          updateDate: doc.update_date,
+          creation_date: doc.creation_date,
+          update_date: doc.update_date,
           public_document: doc.public_document,
           available_for: doc.available_for,
         };

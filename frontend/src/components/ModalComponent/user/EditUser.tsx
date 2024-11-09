@@ -16,7 +16,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { defineAbilityFor } from '../../../casl/ability';
 import { Can } from '@casl/react';
 import { RoleName } from '../../../interfaces';
-import { USER_ROLES } from '../../../userRoles';
+import { USER_ROLES } from '../../../constants';
 
 export interface IEditUserForm {
   username: string;
@@ -25,12 +25,6 @@ export interface IEditUserForm {
   lastname: string;
   role: RoleName;
 }
-
-const roles = [
-  { label: 'Администратор', value: USER_ROLES.ADMIN },
-  { label: 'Пользователь', value: USER_ROLES.USER },
-  { label: 'Модератор', value: USER_ROLES.MODER },
-];
 
 export const EditUser = () => {
   const { t } = useTranslation();
@@ -50,9 +44,15 @@ export const EditUser = () => {
     username: user?.username,
     email: user?.email,
     name: user?.name,
-    lastName: user?.lastname,
+    lastname: user?.lastname,
     role: user?.role,
   };
+
+  const roles = [
+    { label: t('users.roles.ROLE_ADMIN'), value: USER_ROLES.ADMIN },
+    { label: t('users.roles.ROLE_USER'), value: USER_ROLES.USER },
+    { label: t('users.roles.ROLE_MODERATOR'), value: USER_ROLES.MODER },
+  ];
 
   const { register, control, handleSubmit, setValue } = useForm<IEditUserForm>({
     defaultValues,

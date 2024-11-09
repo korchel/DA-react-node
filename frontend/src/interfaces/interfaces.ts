@@ -9,7 +9,7 @@ export type onSelect = (
 
 export interface ISelectOption {
   label: string;
-  value: number;
+  value: string | number;
 }
 
 export interface ITableColumn {
@@ -38,19 +38,14 @@ export interface IUser {
 
 // DOCUMENTS
 
-export type DocumentType = 'NOTE' | 'REPORT';
-
-export interface IDocumentType {
-  id: number;
-  type: DocumentType;
-}
+export type DocumentType = "NOTE" | "REPORT" | "PRESENTATION" | "ARTICLE";
 
 export interface IDocument {
   id: number;
   title: string;
   number: number;
   author: string;
-  type: IDocumentType;
+  type: DocumentType;
   content: string;
   creation_date: string;
   update_date: string;

@@ -20,5 +20,4 @@ export const routes = {
 
   thumbnailPath: (id) => [apiPath, 'files', `${id}/thumbnail`].join('/'),
   fileDownloadPath: (id) => [apiPath, 'files', `download/${id}`].join('/'),
-  viewFilePath: (id) => [apiPath, 'files', `${id}?download=false`].join('/'),
 };

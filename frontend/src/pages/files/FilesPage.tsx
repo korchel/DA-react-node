@@ -8,9 +8,10 @@ import { routes } from '../../routes';
 import { openModal } from '../../store/modalSlice';
 import { TableContainer } from '../../components/TableContainer';
 import { Spinner } from '../../components/ui/icons';
+import { convirtDate } from '../../utils/convirtDate';
 
 export const FilesPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { data: files, isLoading } = getFiles();
@@ -43,18 +44,19 @@ export const FilesPage = () => {
     },
   ];
 
-  const tableData = files?.map((file) => ({
-    id: file.id,
-    data: {
-      name: file.filename,
-      type: file.filetype,
-      author: file.author,
-      creationDate: file.creation_date
-        ? Date.parse(file.creation_date)
-        : 'no data',
-      updateDate: file.update_date ? Date.parse(file.update_date) : 'no data',
-    },
-  }));
+  const tableData = files?.map((file) => {
+    const { id, filename, filetype, author, creation_date, update_date } = file;
+    return {
+      id: id,
+      data: {
+        name: filename,
+        type: filetype,
+        author: author,
+        creation_date: convirtDate(creation_date, i18n.language),
+        update_date: convirtDate(update_date, i18n.language),
+      },
+    };
+  });
 
   const handleCreate = () => {
     dispatch(openModal({ type: 'uploadFile', open: true }));

@@ -14,7 +14,7 @@ interface ISelectInputProps {
   placeholder: string;
   selectOptions: ISelectOption[];
   error?: Merge<FieldError, (FieldError | undefined)[]>;
-  value: number[] | undefined;
+  value: (number | string)[] | undefined;
   label?: string;
   required?: boolean;
 }
