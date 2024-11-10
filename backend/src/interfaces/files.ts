@@ -8,6 +8,7 @@ export interface IFile {
   creation_date: string;
   update_date: string;
   filepath: string;
+  thumbnail_path: string;
 }
 
 export interface IFileViewModel {

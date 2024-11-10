@@ -1,4 +1,7 @@
 import { Request, Response } from "express";
+import sharp from "sharp";
+import path from "path";
+
 import {
   IFileFormdataModel,
   IFileInputModel,
@@ -15,8 +18,8 @@ import {
   RequestWithParams,
   RequestWithParamsAndBody,
 } from "../interfaces";
-import path from "path";
 import { USER_ROLES } from "../utils/userRoles";
+
 
 const filesModel = new FilesModel(db);
 
@@ -103,20 +106,33 @@ export const postFile = async (
   try {
     if (req.file && req.user) {
       const userId = req.user.id;
-      console.log("USER ID", userId);
       const file = req.file;
-      const { filename, mimetype } = file;
+      const { mimetype } = file;
       const params = JSON.parse(req.body.params);
       const { available_for, public_file } = params;
-      const filepath = req.file.path;
+      const filepath = file.path;
+      const filename = file.originalname;
+      const thumbnail_path = './public/thumbnails/' + 'thumbnail-' + Date.now() + file.originalname;
+      console.log('FILE NAME', file)
       filesModel.create(
         userId,
         filepath,
         public_file,
         filename,
         mimetype,
-        available_for
+        available_for,
+        thumbnail_path,
       );
+      if (mimetype === 'image/jpeg' || mimetype == 'image/png') {
+        sharp(file.path).resize(100, 100).toFile(thumbnail_path,
+        (err: Error, resizeImage: sharp.OutputInfo) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(resizeImage);
+          }
+        });
+      }
       res.status(STATUS.CREATED_201).json({message: `File ${filename} has been uploaded!`});
     } else {
       res.sendStatus(STATUS.FORBIDDEN_403);
@@ -174,6 +190,38 @@ export const updateFile = async (
       }
     }
   } catch (error) {
+    res.sendStatus(STATUS.SERVER_ERROR_500);
+  }
+};
+
+
+export const getThumbnail = async (
+  req: RequestWithParams<IdParam>,
+  res: Response<IDocumentViewModel | Record<string, string>>
+) => {
+  try {
+    console.log("GET THUMBNAIL CALLED");
+    const id = +req.params.id;
+    const currentUser = req.user;
+    if (currentUser) {
+      const fileData = await filesModel.findFileNameById(id, currentUser.id);
+      
+      if (fileData) {
+        const dirname = path.resolve();
+        const fullFilePath = path.join(
+          dirname,
+          fileData.thumbnail_path
+        );
+        res
+          .status(STATUS.OK_200)
+          .type(fileData.filetype)
+          .sendFile(fullFilePath);
+      } else {
+        res.status(STATUS.NOT_FOUND_404).json({ message: "No such file" });
+      }
+    }
+  } catch (error) {
+    console.log("ERROR", error);
     res.sendStatus(STATUS.SERVER_ERROR_500);
   }
 };

@@ -4,6 +4,7 @@ import {
   downloadFile,
   getFile,
   getFiles,
+  getThumbnail,
   postFile,
   updateFile,
 } from "../controllers/filesController";
@@ -17,3 +18,4 @@ filesRouter.get("/:id", getFile);
 filesRouter.delete("/:id", deleteFile);
 filesRouter.put("/:id", updateFile);
 filesRouter.get("/download/:id", downloadFile);
+filesRouter.get('/:id/thumbnail', getThumbnail);

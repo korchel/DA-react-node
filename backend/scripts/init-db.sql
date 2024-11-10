@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS document_types
   (id SERIAL PRIMARY KEY,
   type_name TEXT UNIQUE NOT NULL);
 
-INSERT INTO roles (role_name)
+INSERT INTO document_types (type_name)
   VALUES ('NOTE'), ('REPORT'), ('PRESENTATION'), ('ARTICLE');
 
 CREATE TABLE IF NOT EXISTS users
@@ -47,4 +47,5 @@ CREATE TABLE IF NOT EXISTS files
   creation_date TIMESTAMP NOT NULL,
   update_date TIMESTAMP NOT NULL,
   filepath TEXT,
+  thumbnail_path TEXT,
   FOREIGN KEY (author_id) REFERENCES users (id));

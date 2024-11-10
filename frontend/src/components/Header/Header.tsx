@@ -67,12 +67,12 @@ export const Header = ({ className }) => {
             >
               {t('header.nav.documents')}
             </LinkComponent>
-            <LinkComponent
+            {/* <LinkComponent
               route={routes.searchRoute()}
               className='hidden md:flex'
             >
               <ActionButton actionType='search' />
-            </LinkComponent>
+            </LinkComponent> */}
           </nav>
         )}
         <div className='flex gap-2 items-center px-2 sm:px-5 md:px-0 ml-auto'>

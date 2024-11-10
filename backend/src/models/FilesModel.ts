@@ -6,7 +6,8 @@ interface IFilesModel {
   findById(id: number, currentUserId: number): Promise<IFileViewModel | null>;
   findFileNameById(
     id: number,
-    currentUserId: number
+    currentUserId: number,
+    thumbnail_path: string,
   ): Promise<{ filename: string; filetype: string } | null>;
   removeById(currentUserId: number, id: number): Promise<IFile | null>;
   update(
@@ -20,7 +21,8 @@ interface IFilesModel {
     filename: string,
     mimetype: string,
     available_for: string,
-    public_file: string
+    public_file: string,
+    thumbnail_path: string,
   ): Promise<IFile>;
 }
 
@@ -86,7 +88,7 @@ export class FilesModel implements IFilesModel {
           creation_date,
           update_date,
         } = file;
-        const viewFileName = filename.substring(0, filename.lastIndexOf("-"));
+        const viewFileName = filename.substring(filename.indexOf("-") + 1);
         return {
           id,
           filename: viewFileName,
@@ -105,7 +107,7 @@ export class FilesModel implements IFilesModel {
   async findFileNameById(
     id: number,
     currentUserId: number
-  ): Promise<{ filename: string; filetype: string } | null> {
+  ): Promise<{ filename: string; filetype: string, thumbnail_path: string } | null> {
     const data = await this.database.query(
       `SELECT * FROM files WHERE id = $1
         AND (${currentUserId} = ANY(available_for) OR public_file = true OR author_id = ${currentUserId})`,
@@ -115,8 +117,8 @@ export class FilesModel implements IFilesModel {
       return null;
     }
     const requestedFile = data.rows[0];
-    const { filename, filetype } = requestedFile;
-    return { filename, filetype };
+    const { filename, filetype, thumbnail_path } = requestedFile;
+    return { filename, filetype, thumbnail_path };
   }
 
   async findById(
@@ -146,7 +148,7 @@ export class FilesModel implements IFilesModel {
       creation_date,
       update_date,
     } = requestedFile;
-    const viewFileName = filename.substring(0, filename.lastIndexOf("-"));
+    const viewFileName = filename.substring(filename.indexOf("-"));
     const fileView = {
       id,
       filename: viewFileName,
@@ -182,14 +184,15 @@ export class FilesModel implements IFilesModel {
     public_file: string,
     filename: string,
     mimetype: string,
-    available_for: string
+    available_for: string,
+    thumbnail_path: string,
   ): Promise<IFile> {
     const creation_date = new Date().toISOString();
     const update_date = new Date().toISOString();
     const createdFile = await this.database.query(
       `INSERT INTO files
-      (filename, filetype, author_id, available_for, public_file, creation_date, update_date, filepath)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      (filename, filetype, author_id, available_for, public_file, creation_date, update_date, filepath, thumbnail_path)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *`,
       [
         filename,
@@ -200,6 +203,7 @@ export class FilesModel implements IFilesModel {
         creation_date,
         update_date,
         filepath,
+        thumbnail_path,
       ]
     );
     return createdFile.rows[0];
