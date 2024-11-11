@@ -52,7 +52,10 @@ export const signIn = async (
     } else {
       res
         .status(STATUS.FORBIDDEN_403)
-        .json({ message: "Wrong username or password" });
+        .json({
+          message: "Wrong username or password",
+          status: STATUS.FORBIDDEN_403,
+        });
     }
   } catch (error) {
     res.status(STATUS.UNAUTHORIZED_401);

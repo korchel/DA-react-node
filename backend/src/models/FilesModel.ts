@@ -4,11 +4,6 @@ import { IFile, IFileInputModel, IFileViewModel } from "../interfaces/files";
 interface IFilesModel {
   findAll(currentUserId: number): Promise<IFileViewModel[]>;
   findById(id: number, currentUserId: number): Promise<IFileViewModel | null>;
-  findFileNameById(
-    id: number,
-    currentUserId: number,
-    thumbnail_path: string,
-  ): Promise<{ filename: string; filetype: string } | null>;
   removeById(currentUserId: number, id: number): Promise<IFile | null>;
   update(
     currentUserId: number,
@@ -23,6 +18,7 @@ interface IFilesModel {
     available_for: string,
     public_file: string,
     thumbnail_path: string,
+    filetype: string
   ): Promise<IFile>;
 }
 
@@ -53,10 +49,10 @@ export class FilesModel implements IFilesModel {
           creation_date,
           update_date,
         } = file;
-        const viewFileName = filename.substring(0, filename.lastIndexOf("-"));
+
         return {
           id,
-          filename: viewFileName,
+          filename,
           filetype,
           author: username,
           available_for,
@@ -88,10 +84,10 @@ export class FilesModel implements IFilesModel {
           creation_date,
           update_date,
         } = file;
-        const viewFileName = filename.substring(filename.indexOf("-") + 1);
+
         return {
           id,
-          filename: viewFileName,
+          filename,
           filetype,
           author: username,
           available_for,
@@ -102,23 +98,6 @@ export class FilesModel implements IFilesModel {
       })
     );
     return filesView;
-  }
-
-  async findFileNameById(
-    id: number,
-    currentUserId: number
-  ): Promise<{ filename: string; filetype: string, thumbnail_path: string } | null> {
-    const data = await this.database.query(
-      `SELECT * FROM files WHERE id = $1
-        AND (${currentUserId} = ANY(available_for) OR public_file = true OR author_id = ${currentUserId})`,
-      [id]
-    );
-    if (data.rows.length === 0) {
-      return null;
-    }
-    const requestedFile = data.rows[0];
-    const { filename, filetype, thumbnail_path } = requestedFile;
-    return { filename, filetype, thumbnail_path };
   }
 
   async findById(
@@ -147,17 +126,23 @@ export class FilesModel implements IFilesModel {
       public_file,
       creation_date,
       update_date,
+      mimetype,
+      thumbnail_path,
+      filepath,
     } = requestedFile;
-    const viewFileName = filename.substring(filename.indexOf("-"));
+
     const fileView = {
       id,
-      filename: viewFileName,
+      filename,
       filetype,
       author: username,
       available_for,
       public_file,
       creation_date,
       update_date,
+      mimetype,
+      thumbnail_path,
+      filepath,
     };
     return fileView;
   }
@@ -186,13 +171,14 @@ export class FilesModel implements IFilesModel {
     mimetype: string,
     available_for: string,
     thumbnail_path: string,
+    filetype: string
   ): Promise<IFile> {
     const creation_date = new Date().toISOString();
     const update_date = new Date().toISOString();
     const createdFile = await this.database.query(
       `INSERT INTO files
-      (filename, filetype, author_id, available_for, public_file, creation_date, update_date, filepath, thumbnail_path)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      (filename, mimetype, author_id, available_for, public_file, creation_date, update_date, filepath, thumbnail_path, filetype)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *`,
       [
         filename,
@@ -204,6 +190,7 @@ export class FilesModel implements IFilesModel {
         update_date,
         filepath,
         thumbnail_path,
+        filetype,
       ]
     );
     return createdFile.rows[0];

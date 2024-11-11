@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS documents
 CREATE TABLE IF NOT EXISTS files
   (id SERIAL PRIMARY KEY,
   filename TEXT,
+  mimetype TEXT,
   filetype TEXT,
   author_id INTEGER,
   content TEXT,

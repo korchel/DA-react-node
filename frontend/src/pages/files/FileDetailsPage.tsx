@@ -35,19 +35,19 @@ const FileDetailsPage = () => {
 
   const handleDownload = (event, id) => {
     event.stopPropagation();
-    fetch(routes.fileDownloadPath(id))
+    fetch(routes.fileDownloadPath(id), { credentials: 'include' })
       .then((res) => res.blob())
       .then((blob) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        console.log(blob)
+        console.log(blob);
         a.href = url;
         a.download = file?.filename as string;
         a.click();
         URL.revokeObjectURL(url);
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
       });
   };
 

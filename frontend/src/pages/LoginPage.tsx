@@ -59,7 +59,7 @@ export const LoginPage = () => {
           logIn({ role, id, username });
           navigate(routes.documentsRoute());
         } else {
-          if (data.status === 400) {
+          if (data.status === 403) {
             setauthFailed(true);
             setButtonDisabled(false);
           }
@@ -125,7 +125,7 @@ export const LoginPage = () => {
             }
           />
           {authFailed && !errors.password && (
-            <ErrorMessage className='bottom-14 sm:bottom-16 md:bottom-[70px]'>
+            <ErrorMessage className='bottom-14 sm:bottom-16 md:bottom-20'>
               {t('errorMessages.wrongPasswordOrUsername')}
             </ErrorMessage>
           )}
