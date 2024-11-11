@@ -34,12 +34,12 @@ export const FilesPage = () => {
     },
     {
       label: t('files.tableHeader.creationDate'),
-      accessor: 'creationDate',
+      accessor: 'creation_date',
       sortable: true,
     },
     {
       label: t('files.tableHeader.updateDate'),
-      accessor: 'updateDate',
+      accessor: 'update_date',
       sortable: true,
     },
   ];

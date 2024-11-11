@@ -9,6 +9,10 @@ export const useSortableTable = (tableData: ITableData[] | undefined): [ITableDa
       const sorted = [...tableData].sort((a, b) => {
         if (!a['data'][sortField]) return 1;
         if (!b['data'][sortField]) return -1;
+        if (sortField === 'creationDate' || sortField === 'updateDate') {
+          console.log(sortField)
+          return new Date(b['data'][sortField]).getTime() - new Date(b['data'][sortField]).getTime();
+        }
         if (a['data'][sortField] && b['data'][sortField]) {
           return (
             a.data[sortField].toString().localeCompare(b.data[sortField].toString(), ["en", 'ru'], {

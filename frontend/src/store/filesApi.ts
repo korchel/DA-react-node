@@ -40,7 +40,7 @@ export const filesApi = createApi({
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ['file'],
+      invalidatesTags: ['file', 'files'],
     }),
 
     deleteFile: builder.mutation({
