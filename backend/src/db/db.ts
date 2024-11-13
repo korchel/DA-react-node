@@ -13,10 +13,12 @@ export const setUpDataBase = async () => {
   try {
     const client = await db.connect();
     const moderPassword = await bcrypt.hash("password", 10);
+    const creation_date = new Date().toISOString();
+    const update_date = new Date().toISOString();
     await client.query(
       `INSERT INTO users
-      (username, "name", lastname, email, role, "password")
-      VALUES ($1, $2, $3, $4, $5, $6)
+      (username, "name", lastname, email, role, "password", creation_date, update_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       ON CONFLICT DO NOTHING;`,
       [
         "moder",
@@ -25,15 +27,26 @@ export const setUpDataBase = async () => {
         "peter@email.com",
         "ROLE_MODERATOR",
         moderPassword,
+        creation_date,
+        update_date,
       ]
     );
     const adminPassword = await bcrypt.hash("password", 10);
     await client.query(
       `INSERT INTO users
-      (username, "name", lastname, email, role, "password")
-      VALUES ($1, $2, $3, $4, $5, $6)
+      (username, "name", lastname, email, role, "password", creation_date, update_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       ON CONFLICT DO NOTHING;`,
-      ["admin", "John", "Doe", "john@email.com", "ROLE_ADMIN", adminPassword]
+      [
+        "admin",
+        "John",
+        "Doe",
+        "john@email.com",
+        "ROLE_ADMIN",
+        adminPassword,
+        creation_date,
+        update_date,
+      ]
     );
     client.release();
     console.log("DATABASE READY");

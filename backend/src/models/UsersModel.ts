@@ -38,6 +38,7 @@ export class UsersModel implements IUserModel {
       name: user.name,
       lastname: user.lastname,
       role: user.role,
+      creation_date: user.creation_date,
     }));
     return usersView;
   }
@@ -51,8 +52,17 @@ export class UsersModel implements IUserModel {
       return null;
     }
     const requestedUser = data.rows[0];
-    const { username, email, name, lastname, role } = requestedUser;
-    return { id: requestedUser.id, username, email, name, lastname, role };
+    const { username, email, name, lastname, role, creation_date } =
+      requestedUser;
+    return {
+      id: requestedUser.id,
+      username,
+      email,
+      name,
+      lastname,
+      role,
+      creation_date,
+    };
   }
 
   async removeById(id: number): Promise<boolean> {
@@ -71,11 +81,12 @@ export class UsersModel implements IUserModel {
     let updatedData;
     if (isAdmin) {
       const { username, email, name, lastname, role } = data;
+      const update_date = new Date().toISOString();
       updatedData = await this.database.query(
         `UPDATE users
-        SET username = $1, email = $2, name = $3, lastname = $4, role = $5
-        WHERE id = $6 RETURNING *`,
-        [username, email, name, lastname, role, id]
+        SET username = $1, email = $2, name = $3, lastname = $4, role = $5, update_date=$6
+        WHERE id = $7 RETURNING *`,
+        [username, email, name, lastname, role, update_date, id]
       );
     } else {
       const { username, email, name, lastname } = data;
@@ -102,11 +113,22 @@ export class UsersModel implements IUserModel {
     const { name, lastname, username, email, password } = data;
     const hashedPassword = await bcrypt.hash(password, 10);
     try {
+      const creation_date = new Date().toISOString();
+      const update_date = new Date().toISOString();
       const newUserData = await this.database.query(
         `INSERT INTO users
-        (name, lastname, username, email, password, role)
-        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-        [name, lastname, username, email, hashedPassword, USER_ROLES.USER]
+        (name, lastname, username, email, password, role, creation_date, update_date)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        [
+          name,
+          lastname,
+          username,
+          email,
+          hashedPassword,
+          USER_ROLES.USER,
+          creation_date,
+          update_date,
+        ]
       );
       const newUser = newUserData.rows[0];
       return {

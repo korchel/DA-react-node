@@ -11,6 +11,7 @@ export const users = {
     name: 'Имя',
     lastName: 'Фамилия',
     roles: 'Роли',
+    registration: 'Дата регистрации',
   },
   roles: {
     ROLE_ADMIN: 'Администартор',

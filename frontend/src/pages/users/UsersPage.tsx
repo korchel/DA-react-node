@@ -6,16 +6,17 @@ import { useGetUsersQuery as getUsers } from '../../store/usersApi';
 import { Spinner } from '../../components/ui/icons';
 import { Title } from '../../components/ui';
 import { TableContainer } from '../../components/TableContainer';
+import { convirtDate } from '../../utils/convirtDate';
 
 export const UsersPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: users, isLoading } = getUsers();
   const navigate = useNavigate();
 
   const tableColumns = [
     {
       label: t('users.tableHeader.userName'),
-      accessor: 'userName',
+      accessor: 'username',
       sortable: true,
     },
     {
@@ -25,7 +26,7 @@ export const UsersPage = () => {
     },
     {
       label: t('users.tableHeader.lastName'),
-      accessor: 'lastName',
+      accessor: 'lastname',
       sortable: true,
     },
     {
@@ -33,17 +34,26 @@ export const UsersPage = () => {
       accessor: 'roles',
       sortable: false,
     },
+    {
+      label: t('users.tableHeader.registration'),
+      accessor: 'creationDate',
+      sortable: true,
+    },
   ];
 
-  const tableData = users?.map((user) => ({
-    id: user.id,
-    data: {
-      userName: user.username,
-      name: user.name,
-      lastName: user.lastname,
-      role: t(`users.roles.${user.role}`),
-    },
-  }));
+  const tableData = users?.map((user) => {
+    const { id, username, name, lastname, role, creation_date } = user;
+    return {
+      id,
+      data: {
+        username,
+        name,
+        lastname,
+        role: t(`users.roles.${role}`),
+        creationDate: convirtDate(creation_date, i18n.language),
+      },
+    };
+  });
 
   const handleGoToDetailsPage = (id: number) => {
     navigate(routes.userDetailsRoute(id));

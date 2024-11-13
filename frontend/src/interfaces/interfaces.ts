@@ -34,11 +34,12 @@ export interface IUser {
   name: string;
   lastname: string;
   role: RoleName;
+  creation_date: string;
 }
 
 // DOCUMENTS
 
-export type DocumentType = "NOTE" | "REPORT" | "PRESENTATION" | "ARTICLE";
+export type DocumentType = 'NOTE' | 'REPORT' | 'PRESENTATION' | 'ARTICLE';
 
 export interface IDocument {
   id: number;

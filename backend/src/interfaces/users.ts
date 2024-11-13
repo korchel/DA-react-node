@@ -8,6 +8,8 @@ export interface IUser {
   lastname: string;
   role: RoleName;
   password: string;
+  creation_date: string;
+  update_date: string;
 }
 
 export interface IUserViewModel {
@@ -17,6 +19,7 @@ export interface IUserViewModel {
   name: string;
   lastname: string;
   role: RoleName;
+  creation_date?: string;
 }
 
 export interface IUserInputModel {

@@ -10,6 +10,7 @@ export const users = {
     name: 'Name',
     lastName: 'Last name',
     roles: 'Roles',
+    registration: 'Registration date',
   },
   roles: {
     ROLE_ADMIN: 'Administrator',

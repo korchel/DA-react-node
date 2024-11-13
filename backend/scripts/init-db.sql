@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS users
   email TEXT UNIQUE NOT NULL,
   role TEXT,
   password TEXT,
+  creation_date TIMESTAMP NOT NULL,
+  update_date TIMESTAMP NOT NULL,
   FOREIGN KEY (role) REFERENCES roles (role_name));
 
 CREATE TABLE IF NOT EXISTS documents
