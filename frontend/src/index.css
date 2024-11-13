@@ -31,3 +31,20 @@
   --toastify-color-warning: #f1c40f;
   --toastify-color-error: var(--danger-color);
 }
+
+body,
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

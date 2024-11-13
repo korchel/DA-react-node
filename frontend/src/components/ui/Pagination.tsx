@@ -29,7 +29,10 @@ export const Pagination = ({
 
   return (
     <div
-      className={clsx(className, 'flex rounded-md overflow-hidden shadow-md')}
+      className={clsx(
+        className,
+        'flex rounded-md overflow-hidden shadow-md h-8',
+      )}
     >
       <ActionButton
         actionType='chevronDouble'

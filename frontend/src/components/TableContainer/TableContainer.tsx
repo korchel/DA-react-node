@@ -86,7 +86,9 @@ export const TableContainer = ({
   const isEmpty = !(tableData && tableData.length > 0);
 
   return (
-    <div className={clsx(className, 'flex flex-col gap-2 md:gap-4')}>
+    <div
+      className={clsx(className, 'flex flex-col gap-2 md:gap-4 h-full min-h-0')}
+    >
       <div className='flex gap-2 flex-wrap bg-white dark:bg-secondaryDark p-2 md:p-4 rounded-md'>
         <QuantityTag type={type} number={filteredTable.length} />
         <PageSizeSwitcher
@@ -111,78 +113,81 @@ export const TableContainer = ({
           </ButtonComponent>
         )}
       </div>
-      <Table>
-        <THead>
-          <THead.Tr>
-            {tableColumns.map((tableColumn) => (
-              <Th
-                key={tableColumn.accessor}
-                onClick={
-                  tableColumn.sortable
-                    ? () => handleSort(tableColumn.accessor)
-                    : undefined
-                }
-                className={tableColumn.sortable && 'cursor-pointer'}
-              >
-                <div className='flex it'>
-                  <div className='truncate'>{tableColumn.label}</div>
-                  {tableColumn.sortable && (
-                    <SortArrow
-                      className={clsx(
-                        sortOrder === 'asc' &&
-                          tableColumn.accessor === sortField &&
-                          'rotate-180',
-                        'block w-4 sm:w-5 md:w-6',
-                      )}
-                      active={tableColumn.accessor === sortField}
-                    />
-                  )}
-                </div>
-              </Th>
-            ))}
-          </THead.Tr>
-        </THead>
-        <TBody>
-          {isEmpty ? (
-            <EmptyTableBody>{t('emptyTable')}</EmptyTableBody>
-          ) : (
-            pages[currentPage - 1]?.map((item) => (
-              <TBody.Tr
-                key={item.id}
-                onClick={() => handleGoToDetailsPage(item.id)}
-              >
-                {Object.entries(item.data).map(([key, param], index) => {
-                  const string = (
-                    param instanceof Date ? param.toLocaleDateString() : param
-                  ) as string;
 
-                  if (filterFields[type].includes(key)) {
+      <div className='overflow-hidden md:overflow-y-auto shrink min-h-0 rounded-md'>
+        <Table>
+          <THead>
+            <THead.Tr>
+              {tableColumns.map((tableColumn) => (
+                <Th
+                  key={tableColumn.accessor}
+                  onClick={
+                    tableColumn.sortable
+                      ? () => handleSort(tableColumn.accessor)
+                      : undefined
+                  }
+                  className={tableColumn.sortable && 'cursor-pointer'}
+                >
+                  <div className='flex it'>
+                    <div className='truncate'>{tableColumn.label}</div>
+                    {tableColumn.sortable && (
+                      <SortArrow
+                        className={clsx(
+                          sortOrder === 'asc' &&
+                            tableColumn.accessor === sortField &&
+                            'rotate-180',
+                          'block w-4 sm:w-5 md:w-6',
+                        )}
+                        active={tableColumn.accessor === sortField}
+                      />
+                    )}
+                  </div>
+                </Th>
+              ))}
+            </THead.Tr>
+          </THead>
+          <TBody>
+            {isEmpty ? (
+              <EmptyTableBody>{t('emptyTable')}</EmptyTableBody>
+            ) : (
+              pages[currentPage - 1]?.map((item) => (
+                <TBody.Tr
+                  key={item.id}
+                  onClick={() => handleGoToDetailsPage(item.id)}
+                >
+                  {Object.entries(item.data).map(([key, param], index) => {
+                    const string = (
+                      param instanceof Date ? param.toLocaleDateString() : param
+                    ) as string;
+
+                    if (filterFields[type].includes(key)) {
+                      return (
+                        <Td key={index}>
+                          <Highlighter
+                            highlightClassName='bg-highlightDark dark:text-primaryDark'
+                            searchWords={[searchValue]}
+                            autoEscape={true}
+                            textToHighlight={string}
+                          />
+                        </Td>
+                      );
+                    }
                     return (
                       <Td key={index}>
-                        <Highlighter
-                          highlightClassName='bg-highlightDark dark:text-primaryDark'
-                          searchWords={[searchValue]}
-                          autoEscape={true}
-                          textToHighlight={string}
-                        />
+                        {param instanceof Date
+                          ? param.toLocaleDateString()
+                          : param}
                       </Td>
                     );
-                  }
-                  return (
-                    <Td key={index}>
-                      {param instanceof Date
-                        ? param.toLocaleDateString()
-                        : param}
-                    </Td>
-                  );
-                })}
-              </TBody.Tr>
-            ))
-          )}
-        </TBody>
-      </Table>
+                  })}
+                </TBody.Tr>
+              ))
+            )}
+          </TBody>
+        </Table>
+      </div>
       <Pagination
-        className='ml-auto'
+        className='ml-auto mt-auto shrink-0'
         numberOfPages={numberOfPages}
         currentPage={currentPage}
         goToPage={handleChangePage}
@@ -207,7 +212,8 @@ function THead({ children }) {
   return (
     <thead
       className='block xl:table-header-group float-left xl:float-none uppercase
-      text-secondary dark:text-whiteDark whitespace-nowrap'
+      text-secondary dark:text-whiteDark whitespace-nowrap
+      md:sticky md:top-0 bg-inherit'
     >
       {children}
     </thead>
