@@ -1,4 +1,3 @@
-import { FieldError } from 'react-hook-form';
 import Select from 'react-select';
 
 import { InputLabel } from '../InputLabel';
@@ -13,7 +12,7 @@ interface ISelectInputProps {
   onChange: (option: string | number) => void;
   placeholder?: string;
   selectOptions: ISelectOption[];
-  error?: FieldError;
+  error?: string;
   value: string | number;
   label?: string;
   required?: boolean;
@@ -57,7 +56,7 @@ export const SelectComponent = forwardRef(
             ref={ref}
             {...props}
           />
-          {error && <ErrorMessage>{error.message}</ErrorMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
         </div>
       </EmotionCacheProvider>
     );

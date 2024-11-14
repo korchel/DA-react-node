@@ -10,6 +10,7 @@ import {
   Title,
 } from '../components/ui';
 import { routes } from '../routes';
+import { normalizeI18nString } from '../utils/normalizeI18nString';
 
 interface ISignupData {
   name: string;
@@ -75,58 +76,58 @@ export const SignupPage = () => {
           <Title>{t('signupPage.title')}</Title>
           <InputField
             placeholder={t('signupPage.placeholders.username')}
-            error={errors.username}
+            error={t(normalizeI18nString(errors.username?.message))}
             {...register('username', {
-              required: { value: true, message: t('errorMessages.reuired') },
+              required: { value: true, message: 'errorMessages.required' },
             })}
           />
           <InputField
             autoComplete='on'
             type='email'
             placeholder={t('signupPage.placeholders.email')}
-            error={errors.email}
+            error={t(normalizeI18nString(errors.email?.message))}
             {...register('email', {
               required: {
                 value: true,
-                message: t('errorMessages.reuired'),
+                message: 'errorMessages.required',
               },
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: t('errorMessages.inValidEmail'),
+                message: 'errorMessages.inValidEmail',
               },
             })}
           />
           <InputField
             placeholder={t('signupPage.placeholders.name')}
-            error={errors.name}
+            error={t(normalizeI18nString(errors.name?.message))}
             {...register('name', {
-              required: { value: true, message: t('errorMessages.reuired') },
+              required: { value: true, message: 'errorMessages.required' },
             })}
           />
           <InputField
-            error={errors.lastname}
+            error={t(normalizeI18nString(errors.lastname?.message))}
             placeholder={t('signupPage.placeholders.lastname')}
             {...register('lastname', {
-              required: { value: true, message: t('errorMessages.reuired') },
+              required: { value: true, message: 'errorMessages.required' },
             })}
           />
           <InputField
             autoComplete='new-password'
             type='password'
             placeholder={t('signupPage.placeholders.password')}
-            error={errors.password}
+            error={t(normalizeI18nString(errors.password?.message))}
             {...register('password', {
               required: {
                 value: true,
-                message: t('errorMessages.reuired'),
+                message: 'errorMessages.required',
               },
               minLength: {
                 value: 8,
-                message: t('errorMessages.passwordLength'),
+                message: 'errorMessages.passwordLength',
               },
               maxLength: {
                 value: 14,
-                message: t('errorMessages.passwordLength'),
+                message: 'errorMessages.passwordLength',
               },
             })}
           />
@@ -134,15 +135,15 @@ export const SignupPage = () => {
             autoComplete='new-password'
             type='password'
             placeholder={t('signupPage.placeholders.repeatPassword')}
-            error={errors.passwordConfirm}
+            error={t(normalizeI18nString(errors.passwordConfirm?.message))}
             {...register('passwordConfirm', {
               required: {
                 value: true,
-                message: t('errorMessages.reuired'),
+                message: 'errorMessages.required',
               },
               validate: (value) => {
                 const password = getValues('password');
-                return value === password || t('errorMessages.confirmPassword');
+                return value === password || 'errorMessages.confirmPassword';
               },
             })}
           />

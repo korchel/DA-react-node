@@ -22,8 +22,13 @@ import {
 import { useGetUsersQuery as getUsers } from '../../../store/usersApi';
 import { routes } from '../../../routes';
 import { closeModal, getCurrentDataId } from '../../../store/modalSlice';
-import { editDocFormSchema, IDocForm, IDocTypeSelectOption } from './docFormSchema';
+import {
+  editDocFormSchema,
+  IDocForm,
+  IDocTypeSelectOption,
+} from './docFormSchema';
 import { DOCUMENT_TYPES } from '../../../constants';
+import { normalizeI18nString } from '../../../utils/normalizeI18nString';
 
 export const EditDocument = () => {
   const { t } = useTranslation();
@@ -38,7 +43,10 @@ export const EditDocument = () => {
   const selectTypeOptions: IDocTypeSelectOption[] = [
     { value: DOCUMENT_TYPES.NOTE, label: t('documents.type.NOTE') },
     { value: DOCUMENT_TYPES.REPORT, label: t('documents.type.REPORT') },
-    { value: DOCUMENT_TYPES.PRESENTATION, label: t('documents.type.PRESENTATION') },
+    {
+      value: DOCUMENT_TYPES.PRESENTATION,
+      label: t('documents.type.PRESENTATION'),
+    },
     { value: DOCUMENT_TYPES.ARTICLE, label: t('documents.type.ARTICLE') },
   ];
 
@@ -93,17 +101,17 @@ export const EditDocument = () => {
       <InputField
         {...register('title')}
         label={t('documents.modal.form.labels.title')}
-        error={errors.title}
+        error={errors.title?.message}
       />
       <InputField
         {...register('number')}
         label={t('documents.modal.form.labels.number')}
-        error={errors.number}
+        error={errors.number?.message}
       />
       <TextArea
         {...register('content')}
         label={t('documents.modal.form.labels.content')}
-        error={errors.content}
+        error={errors.content?.message}
       />
       <Controller
         control={control}
@@ -111,7 +119,7 @@ export const EditDocument = () => {
         render={({ field }) => (
           <SelectComponent
             {...field}
-            error={errors.type}
+            error={t(normalizeI18nString(errors.content?.message))}
             placeholder={t('documents.modal.form.placeholders.type')}
             onChange={field.onChange}
             label={t('documents.modal.form.labels.type')}

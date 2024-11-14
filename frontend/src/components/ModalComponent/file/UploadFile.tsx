@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Controller, FieldError, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useGetUsersQuery as getUsers } from '../../../store/usersApi';
 import {
@@ -16,14 +17,8 @@ import {
 import { useUploadFileMutation } from '../../../store/filesApi';
 import { closeModal } from '../../../store/modalSlice';
 import { routes } from '../../../routes';
-
-export interface IFileForm {
-  file: any;
-  params: {
-    available_for: number[];
-    public_file: boolean;
-  };
-}
+import { fileUploadSchema, IFileForm } from './fileUploadSchema';
+import { normalizeI18nString } from '../../../utils/normalizeI18nString';
 
 const defaultValues = {
   params: {
@@ -48,7 +43,10 @@ export const UploadFile = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<IFileForm>({ defaultValues });
+  } = useForm<IFileForm>({
+    defaultValues,
+    resolver: zodResolver(fileUploadSchema),
+  });
 
   const onSubmit = (data: IFileForm) => {
     const fomrData = new FormData();
@@ -60,7 +58,7 @@ export const UploadFile = () => {
         toast.success(t('files.modal.upload.toast.success'));
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         toast.error(t('files.modal.upload.toast.error'));
       });
     dispatch(closeModal());
@@ -79,9 +77,10 @@ export const UploadFile = () => {
         render={({ field }) => (
           <FileInput
             {...field}
-            value={field.value?.fileName}
+            value={''}
             onChange={field.onChange}
-            error={errors.file as FieldError}
+            label={t('files.modal.form.labels.addFile')}
+            error={t(normalizeI18nString(errors.file?.message))}
           />
         )}
       />

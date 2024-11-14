@@ -10,7 +10,7 @@ export const ErrorMessage = ({ children, className }: IErrorMessage) => (
   <p
     className={clsx(
       className,
-      'absolute text-xs first-line:sm:text-sm leading-tight text-danger dark:text-[#e67a71]',
+      'absolute text-xs sm:text-sm leading-tight text-danger dark:text-errorDark',
     )}
   >
     {children}

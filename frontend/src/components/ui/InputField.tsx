@@ -6,7 +6,6 @@ import {
   InputHTMLAttributes,
   ReactNode,
 } from 'react';
-import { FieldError } from 'react-hook-form';
 import { InputLabel } from './InputLabel';
 import { ErrorMessage } from './ErrorMessage';
 
@@ -16,7 +15,7 @@ export interface InputFieldProps
     HTMLInputElement
   > {
   type?: 'text' | 'email' | 'password' | 'number';
-  error?: FieldError;
+  error?: string;
   placeholder?: string;
   label?: string;
   actionButton?: ReactNode;
@@ -44,12 +43,14 @@ export const InputField = forwardRef(
           type={type}
           id={label}
           className={clsx(
-            error ? 'border-danger' : 'border-secondary',
+            error
+              ? 'border-danger  dark:border-errorDark'
+              : 'border-secondary dark:border-whiteDark',
             'block p-2 border bg-transparent rounded-sm w-full',
             'placeholder:text-gray dark:placeholder:text-whiteDark',
             'outline-none',
             'focus:ring focus:ring-primary focus:ring-opacity-50',
-            'dark:border-whiteDark dark:focus:ring-primaryDark',
+            ' dark:focus:ring-primaryDark',
             'autofill:shadow-[inset_0_0_0px_1000px_var(--white-color)] autofill:[-webkit-text-fill-color:_var(--secondary-color)]',
             'dark:autofill:shadow-[inset_0_0_0px_1000px_var(--secondary-dark-color)] dark:autofill:[-webkit-text-fill-color:_var(--white-dark-color)]',
           )}
@@ -59,7 +60,7 @@ export const InputField = forwardRef(
           onChange={onChange}
         />
         {actionButton}
-        {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
       </div>
     );
   },

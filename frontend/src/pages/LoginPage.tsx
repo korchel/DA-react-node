@@ -12,6 +12,7 @@ import {
 } from '../components/ui';
 import { routes } from '../routes';
 import { useAuth } from '../context/AuthContext';
+import { normalizeI18nString } from '../utils/normalizeI18nString';
 
 interface ILoginData {
   username: string;
@@ -89,11 +90,11 @@ export const LoginPage = () => {
           <InputField
             autoComplete='on'
             placeholder={t('loginPage.placeholders.userName')}
-            error={errors.username}
+            error={t(normalizeI18nString(errors.username?.message))}
             {...register('username', {
               required: {
                 value: true,
-                message: t('errorMessages.reuired'),
+                message: 'errorMessages.required',
               },
             })}
           />
@@ -101,19 +102,19 @@ export const LoginPage = () => {
             autoComplete='on'
             type={passwordInputType as 'password' | 'text'}
             placeholder={t('loginPage.placeholders.password')}
-            error={errors.password}
+            error={t(normalizeI18nString(errors.password?.message))}
             {...register('password', {
               required: {
                 value: true,
-                message: t('errorMessages.reuired'),
+                message: 'errorMessages.required',
               },
               minLength: {
                 value: 8,
-                message: t('errorMessages.passwordLength'),
+                message: 'errorMessages.passwordLength',
               },
               maxLength: {
                 value: 14,
-                message: t('errorMessages.passwordLength'),
+                message: 'errorMessages.passwordLength',
               },
             })}
             actionButton={

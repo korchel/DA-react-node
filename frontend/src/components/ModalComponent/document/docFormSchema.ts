@@ -12,16 +12,16 @@ export interface IDocForm {
 export const createDocFormSchema: ZodType<IDocForm> = z.object({
   title: z
     .string({
-      required_error: 'Обязательное поле',
+      required_error: 'errorMessages.required',
     })
-    .min(2, { message: 'Не менее 2 символов' })
-    .max(50, { message: 'Не более 50 символов' }),
+    .min(2, { message: 'errorMessages.docTitleLength' })
+    .max(50, { message: 'errorMessages.docTitleLength' }),
   number: z.coerce.number().positive({
-    message: 'Обязательное поле',
+    message: 'errorMessages.required',
   }),
-  content: z.string().trim().min(1, { message: 'Обязательное поле' }),
+  content: z.string().trim().min(1, { message: 'errorMessages.required' }),
   type: z.string({
-    required_error: 'Обязательное поле',
+    required_error: 'errorMessages.required',
   }),
   available_for: z.array(z.number()).optional(),
   public_document: z.boolean(),
@@ -30,16 +30,16 @@ export const createDocFormSchema: ZodType<IDocForm> = z.object({
 export const editDocFormSchema: ZodType<IDocForm> = z.object({
   title: z
     .string({
-      required_error: 'Обязательное поле',
+      required_error: 'errorMessages.required',
     })
-    .min(2, { message: 'Не менее 2 символов' })
-    .max(50, { message: 'Не более 50 символов' }),
+    .min(2, { message: 'errorMessages.docTitleLength' })
+    .max(50, { message: 'errorMessages.docTitleLength' }),
   number: z.coerce.number().positive({
-    message: 'Обязательное поле',
+    message: 'errorMessages.required',
   }),
-  content: z.string().trim().min(1, { message: 'Обязательное поле' }),
+  content: z.string().trim().min(1, { message: 'errorMessages.required' }),
   type: z.string({
-    required_error: 'Обязательное поле',
+    required_error: 'errorMessages.required',
   }),
   available_for: z.array(z.number()).optional(),
   public_document: z.boolean(),

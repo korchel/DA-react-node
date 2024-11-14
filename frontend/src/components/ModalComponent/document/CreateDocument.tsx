@@ -22,6 +22,7 @@ import { createDocFormSchema, IDocForm } from './docFormSchema';
 import { useEffect } from 'react';
 import { DOCUMENT_TYPES } from '../../../constants';
 import { IDocTypeSelectOption } from './docFormSchema';
+import { normalizeI18nString } from '../../../utils/normalizeI18nString';
 
 export const CreateDocument = () => {
   const { t } = useTranslation();
@@ -31,7 +32,10 @@ export const CreateDocument = () => {
   const selectTypeOptions: IDocTypeSelectOption[] = [
     { value: DOCUMENT_TYPES.NOTE, label: t('documents.type.NOTE') },
     { value: DOCUMENT_TYPES.REPORT, label: t('documents.type.REPORT') },
-    { value: DOCUMENT_TYPES.PRESENTATION, label: t('documents.type.PRESENTATION') },
+    {
+      value: DOCUMENT_TYPES.PRESENTATION,
+      label: t('documents.type.PRESENTATION'),
+    },
     { value: DOCUMENT_TYPES.ARTICLE, label: t('documents.type.ARTICLE') },
   ];
 
@@ -80,19 +84,19 @@ export const CreateDocument = () => {
       <InputField
         {...register('title')}
         label={t('documents.modal.form.labels.title')}
-        error={errors.title}
+        error={t(normalizeI18nString(errors.title?.message))}
       />
       <InputField
         {...register('number')}
         label={t('documents.modal.form.labels.number')}
         placeholder={t('documents.modal.form.placeholders.number')}
-        error={errors.number}
+        error={t(normalizeI18nString(errors.number?.message))}
         type='number'
       />
       <TextArea
         {...register('content')}
         label={t('documents.modal.form.labels.content')}
-        error={errors.content}
+        error={t(normalizeI18nString(errors.content?.message))}
       />
       <Controller
         control={control}
@@ -101,7 +105,7 @@ export const CreateDocument = () => {
           <SelectComponent
             {...field}
             placeholder={t('documents.modal.form.placeholders.type')}
-            error={errors.type}
+            error={t(normalizeI18nString(errors.type?.message))}
             label={t('documents.modal.form.labels.type')}
             onChange={field.onChange}
             selectOptions={selectTypeOptions}

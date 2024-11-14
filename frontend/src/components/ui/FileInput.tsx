@@ -10,8 +10,6 @@ import {
 import clsx from 'clsx';
 
 import { InputLabel } from './InputLabel';
-import { useTranslation } from 'react-i18next';
-import { FieldError } from 'react-hook-form';
 import { ErrorMessage } from './ErrorMessage';
 
 interface IFileInput
@@ -20,18 +18,18 @@ interface IFileInput
     HTMLInputElement
   > {
   onChange: (...event: any[]) => void;
-  error?: FieldError;
+  error?: string;
+  label: string;
 }
 
 export const FileInput = forwardRef(
   (
-    { onChange, error, ...props }: IFileInput,
+    { onChange, error, label, ...props }: IFileInput,
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
-    const { t } = useTranslation();
     const [fileName, setFileName] = useState<string | undefined>(
-      '.pdf, .jpeg, .doc',
-    ); // file types?
+      '.pdf, .jpeg, .docx',
+    );
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
       const file = event.target.files?.[0];
@@ -42,14 +40,15 @@ export const FileInput = forwardRef(
     return (
       <div
         className={clsx(
-          error ? 'border-danger' : 'border-secondary',
+          error
+            ? 'border-danger dark:border-errorDark'
+            : 'border-secondary, dark:border-whiteDark',
           'relative border p-2 cursor-pointer rounded-sm',
-          'dark:border-whiteDark',
           'text-gray dark:text-whiteDark',
         )}
       >
         <InputLabel required htmlFor='file'>
-          {t('files.modal.form.labels.addFile')}
+          {label}
         </InputLabel>
         <div>{fileName}</div>
         <input
@@ -60,7 +59,11 @@ export const FileInput = forwardRef(
           ref={ref}
           onChange={handleChange}
         />
-        {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        {error && (
+          <ErrorMessage className='absolute top-10 left-0'>
+            {error}
+          </ErrorMessage>
+        )}
       </div>
     );
   },
