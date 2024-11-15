@@ -26,7 +26,7 @@ export const LoginPage = () => {
     setFocus,
     handleSubmit,
     formState: { errors },
-  } = useForm<ILoginData>();
+  } = useForm<ILoginData>({ mode: 'onSubmit', reValidateMode: 'onSubmit' });
   const { logIn } = useAuth();
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);

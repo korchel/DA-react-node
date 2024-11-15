@@ -8,6 +8,7 @@ import { EditFile } from './file/EditFile';
 import { UploadFile } from './file/UploadFile';
 import { ActionButton } from '../ui';
 import { Delete } from './Delete';
+import { useEffect } from 'react';
 
 export const ModalComponent = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,16 @@ export const ModalComponent = () => {
   const handleClose = () => {
     dispatch(closeModal());
   };
+
+  useEffect(() => {
+    const closeOnEscapePressed = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', closeOnEscapePressed);
+    return () => window.removeEventListener('keydown', closeOnEscapePressed);
+  }, []);
 
   return (
     open && (

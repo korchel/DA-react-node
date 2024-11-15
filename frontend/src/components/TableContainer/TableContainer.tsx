@@ -156,18 +156,14 @@ export const TableContainer = ({
                   onClick={() => handleGoToDetailsPage(item.id)}
                 >
                   {Object.entries(item.data).map(([key, param], index) => {
-                    const string = (
-                      param instanceof Date ? param.toLocaleDateString() : param
-                    ) as string;
-
                     if (filterFields[type].includes(key)) {
                       return (
-                        <Td key={index}>
+                        <Td key={index} title={param}>
                           <Highlighter
                             highlightClassName='bg-highlightDark dark:text-primaryDark'
                             searchWords={[searchValue]}
                             autoEscape={true}
-                            textToHighlight={string}
+                            textToHighlight={param as string}
                           />
                         </Td>
                       );
@@ -272,9 +268,10 @@ function EmptyTableBody({ children }) {
   );
 }
 
-function Td({ children }) {
+function Td({ children, ...props }) {
   return (
     <td
+      {...props}
       className='block max-w-48 xl:table-cell truncate
           h-6 sm:h-9 md:h-14
           py-1 sm:py-2 md:py-4
