@@ -4,7 +4,7 @@ import { InputLabel } from '../InputLabel';
 import { ErrorMessage } from '../ErrorMessage';
 import { ISelectOption, onSelect } from './../../../interfaces';
 import { EmotionCacheProvider } from './EmotionProvider';
-import { classNames } from './styles';
+import { getClassNames } from './styles';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef } from 'react';
 
@@ -49,7 +49,7 @@ export const SelectComponent = forwardRef(
                 ? selectOptions.find((option) => option.value === value)
                 : undefined
             }
-            classNames={classNames}
+            classNames={getClassNames(!!error)}
             onChange={handleSelect}
             options={selectOptions}
             placeholder={placeholder}

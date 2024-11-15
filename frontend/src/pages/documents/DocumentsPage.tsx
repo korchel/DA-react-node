@@ -11,11 +11,11 @@ import { TableContainer } from '../../components/TableContainer';
 import { convirtDate } from '../../utils/convirtDate';
 
 export const DocumentsPage = () => {
-  const { t, i18n  } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { data: documents, isLoading } = getDocs();
-  console.log(documents)
+
   const tableColumns = [
     {
       label: t('documents.tableHeader.number'),
@@ -55,8 +55,18 @@ export const DocumentsPage = () => {
   ];
 
   const tableData = documents?.map((document) => {
-    const { id, number, title, author, type, content, creation_date, update_date } = document;
-    return {id,
+    const {
+      id,
+      number,
+      title,
+      author,
+      type,
+      content,
+      creation_date,
+      update_date,
+    } = document;
+    return {
+      id,
       data: {
         number: number,
         name: title,
@@ -66,7 +76,7 @@ export const DocumentsPage = () => {
         creation_date: convirtDate(creation_date, i18n.language),
         update_date: convirtDate(update_date, i18n.language),
       },
-    }
+    };
   });
 
   const handleCreate = () => {

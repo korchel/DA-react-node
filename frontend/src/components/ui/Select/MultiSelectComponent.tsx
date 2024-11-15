@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FieldError, Merge } from 'react-hook-form';
 import Select from 'react-select';
 
 import { InputLabel } from '../InputLabel';
@@ -13,7 +12,7 @@ interface ISelectInputProps {
   onChange: (option: ISelectOption[]) => void;
   placeholder: string;
   selectOptions: ISelectOption[];
-  error?: Merge<FieldError, (FieldError | undefined)[]>;
+  error?: string;
   value: (number | string)[] | undefined;
   label?: string;
   required?: boolean;
@@ -54,7 +53,7 @@ export const MultiSelectComponent = forwardRef(
             ref={ref}
             {...props}
           />
-          {error && <ErrorMessage>{error.message}</ErrorMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
         </div>
       </EmotionCacheProvider>
     );

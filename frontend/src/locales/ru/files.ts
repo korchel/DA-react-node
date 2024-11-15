@@ -51,7 +51,7 @@ export const files = {
         error: 'Произошла ошибка',
         success: 'Файл добавлен',
       },
-      button: 'Загрузить файл',
+      button: 'Добавить файл',
     },
     edit: {
       toast: {

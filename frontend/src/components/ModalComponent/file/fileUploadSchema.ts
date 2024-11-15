@@ -10,7 +10,7 @@ export interface IFileForm {
 
 export const fileUploadSchema: ZodType<IFileForm> = z.object({
   file: z
-    .instanceof(File)
+    .instanceof(File, { message: 'errorMessages.required' })
     .refine(
       (file) =>
         [

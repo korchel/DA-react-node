@@ -118,7 +118,6 @@ export const CreateDocument = () => {
         render={({ field }) => (
           <MultiSelectComponent
             {...field}
-            error={errors.available_for}
             placeholder={t('documents.modal.form.placeholders.availableFor')}
             label={t('documents.modal.form.labels.availableFor')}
             onChange={field.onChange}

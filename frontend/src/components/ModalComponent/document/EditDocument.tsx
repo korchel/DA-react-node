@@ -68,7 +68,7 @@ export const EditDocument = () => {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     setValue,
   } = useForm<IDocForm>({
     defaultValues,
@@ -133,7 +133,6 @@ export const EditDocument = () => {
         render={({ field }) => (
           <MultiSelectComponent
             {...field}
-            error={errors.available_for}
             label={t('documents.modal.form.labels.availableFor')}
             onChange={field.onChange}
             selectOptions={availableForOptions}
@@ -155,7 +154,7 @@ export const EditDocument = () => {
             />
           )}
         />
-        <ButtonComponent type='submit' variant='primary'>
+        <ButtonComponent disabled={!isDirty} type='submit' variant='primary'>
           {t('documents.modal.edit.button')}
         </ButtonComponent>
       </div>

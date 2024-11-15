@@ -42,12 +42,9 @@ export const EditFile = () => {
     type_id: null,
   };
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm<IEditFileForm>({ defaultValues });
+  const { control, handleSubmit, setValue } = useForm<IEditFileForm>({
+    defaultValues,
+  });
   const availableForOptions = users?.map((user) => ({
     label: user.name,
     value: user.id,
@@ -82,7 +79,6 @@ export const EditFile = () => {
         render={({ field }) => (
           <MultiSelectComponent
             {...field}
-            error={errors.available_for}
             label={t('files.modal.form.labels.availableFor')}
             onChange={field.onChange}
             selectOptions={availableForOptions}

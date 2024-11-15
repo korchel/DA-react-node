@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IUser } from '../interfaces';
-import { IEditUserForm } from '../components/ModalComponent/user/EditUser';
+import { IEditUserForm } from '../components/ModalComponent/user/userUpdateSchema';
 
 export const usersApi = createApi({
   reducerPath: 'users',

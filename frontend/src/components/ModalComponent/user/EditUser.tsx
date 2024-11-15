@@ -17,14 +17,9 @@ import { defineAbilityFor } from '../../../casl/ability';
 import { Can } from '@casl/react';
 import { RoleName } from '../../../interfaces';
 import { USER_ROLES } from '../../../constants';
-
-export interface IEditUserForm {
-  username: string;
-  email: string;
-  name: string;
-  lastname: string;
-  role: RoleName;
-}
+import { IEditUserForm, userUpdateSchema } from './userUpdateSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { normalizeI18nString } from '../../../utils/normalizeI18nString';
 
 export const EditUser = () => {
   const { t } = useTranslation();
@@ -54,8 +49,15 @@ export const EditUser = () => {
     { label: t('users.roles.ROLE_MODERATOR'), value: USER_ROLES.MODER },
   ];
 
-  const { register, control, handleSubmit, setValue } = useForm<IEditUserForm>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors, isDirty },
+  } = useForm<IEditUserForm>({
     defaultValues,
+    resolver: zodResolver(userUpdateSchema),
   });
 
   const onSubmit = (data: IEditUserForm) => {
@@ -86,18 +88,22 @@ export const EditUser = () => {
       <Title>{t('users.modal.title.edit')}</Title>
       <InputField
         label={t('users.modal.form.labels.username')}
+        error={t(normalizeI18nString(errors.username?.message))}
         {...register('username')}
       />
       <InputField
         label={t('users.modal.form.labels.email')}
+        error={t(normalizeI18nString(errors.email?.message))}
         {...register('email')}
       />
       <InputField
         label={t('users.modal.form.labels.name')}
+        error={t(normalizeI18nString(errors.name?.message))}
         {...register('name')}
       />
       <InputField
         label={t('users.modal.form.labels.lastname')}
+        error={t(normalizeI18nString(errors.lastname?.message))}
         {...register('lastname')}
       />
       <Can I='edit' a='role' ability={ability}>
@@ -120,7 +126,7 @@ export const EditUser = () => {
           ))}
         </fieldset>
       </Can>
-      <ButtonComponent type='submit' variant='primary'>
+      <ButtonComponent disabled={!isDirty} type='submit' variant='primary'>
         {t('users.modal.edit.button')}
       </ButtonComponent>
     </form>

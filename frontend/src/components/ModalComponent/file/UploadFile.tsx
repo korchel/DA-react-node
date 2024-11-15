@@ -52,6 +52,7 @@ export const UploadFile = () => {
     const fomrData = new FormData();
     fomrData.append('params', JSON.stringify(data.params));
     fomrData.append('file', data.file);
+    console.log(data.file);
     uploadFile(fomrData)
       .unwrap()
       .then(() => {
@@ -90,7 +91,6 @@ export const UploadFile = () => {
         render={({ field }) => (
           <MultiSelectComponent
             {...field}
-            error={errors.params?.available_for}
             label={t('files.modal.form.labels.availableFor')}
             onChange={field.onChange}
             selectOptions={availableForOptions}
@@ -107,13 +107,13 @@ export const UploadFile = () => {
             <CheckBox
               {...field}
               checked={!!field.value}
-              label='Сделать документ публичным'
+              label={t('files.modal.form.labels.publicFile')}
               onChange={(e) => setValue('params.public_file', e.target.checked)}
             />
           )}
         />
         <ButtonComponent type='submit' variant='primary'>
-          Загрузить файл
+          {t('files.modal.upload.button')}
         </ButtonComponent>
       </div>
     </form>
