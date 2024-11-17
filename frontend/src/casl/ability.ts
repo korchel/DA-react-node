@@ -38,11 +38,14 @@ interface IAbilityParams {
 export const defineAbilityFor = ({ user, entity }: IAbilityParams) => {
   const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
-  if (user.role === USER_ROLES.ADMIN || user.username === entity?.author) {
+  if (user.role === USER_ROLES.ADMIN || user.role === USER_ROLES.MODER || user.username === entity?.author) {
     can('edit', 'document');
     can('delete', 'document');
     can('edit', 'file');
     can('delete', 'file');
+  }
+
+  if (user.role === USER_ROLES.ADMIN) {
     can('edit', 'user');
     can('delete', 'user');
   }

@@ -31,12 +31,22 @@ export const getFiles = async (
     const currentUser = req.user;
     if (currentUser) {
       const { id, role } = currentUser;
-      if (role === USER_ROLES.ADMIN) {
-        const data = await filesModel.findAllForAdmin();
-        res.status(STATUS.OK_200).json(data);
-      } else {
-        const data = await filesModel.findAll(id);
-        res.status(STATUS.OK_200).json(data);
+      switch (role) {
+        case USER_ROLES.ADMIN: {
+          const data = await filesModel.findAll();
+          res.status(STATUS.OK_200).json(data);
+          return;
+        }
+        case USER_ROLES.MODER: {
+          const data = await filesModel.findAll();
+          res.status(STATUS.OK_200).json(data);
+          return;
+        }
+        default: {
+          const data = await filesModel.findAllForUser(id);
+          res.status(STATUS.OK_200).json(data);
+          return;
+        }
       }
     } else {
       res.sendStatus(STATUS.FORBIDDEN_403);
@@ -55,7 +65,7 @@ export const getFile = async (
     const id = +req.params.id;
     const currentUser = req.user;
     if (currentUser) {
-      const foundFile = await filesModel.findById(id, currentUser.id);
+      const foundFile = await filesModel.findById(id);
       if (foundFile) {
         res.status(STATUS.OK_200).json(foundFile);
       } else {
@@ -76,7 +86,7 @@ export const downloadFile = async (
     const id = +req.params.id;
     const currentUser = req.user;
     if (currentUser) {
-      const fileData = await filesModel.findById(id, currentUser.id);
+      const fileData = await filesModel.findById(id);
       if (fileData) {
         const dirname = path.resolve();
         const fullFilePath = path.join(dirname, fileData.filepath as string);
@@ -158,8 +168,21 @@ export const deleteFile = async (
     const id = +req.params.id;
     const currentUser = req.user;
     if (currentUser) {
-      const deletedFile = await filesModel.removeById(currentUser.id, id);
-      console.log(deletedFile);
+      const { id: userId, role } = currentUser;
+      let deletedFile = null;
+      switch (role) {
+        case USER_ROLES.ADMIN: {
+          deletedFile = await filesModel.removeById(id);
+          break;
+        }
+        case USER_ROLES.MODER: {
+          deletedFile = await filesModel.removeById(id);
+          break;
+        }
+        default: {
+          deletedFile = await filesModel.removeByIdForUser(userId, id);
+        }
+      }
       if (deletedFile) {
         removeFileFromFs(deletedFile);
         res
@@ -186,9 +209,23 @@ export const updateFile = async (
   try {
     const id = +req.params.id;
     const data = req.body;
-    const userId = req.user?.id;
-    if (userId) {
-      const wasUpdated = await filesModel.update(userId, id, data);
+    const currentUser = req.user;
+    if (currentUser) {
+      const { id: userId, role } = currentUser;
+      let wasUpdated = false;
+      switch (role) {
+        case USER_ROLES.ADMIN: {
+          wasUpdated = await filesModel.update(id, data);
+          break;
+        }
+        case USER_ROLES.MODER: {
+          wasUpdated = await filesModel.update(id, data);
+          break;
+        }
+        default: {
+          wasUpdated = await filesModel.updateForUser(userId, id, data);
+        }
+      }
       if (wasUpdated) {
         res.sendStatus(STATUS.NO_CONTENT_204);
       } else {
@@ -209,7 +246,7 @@ export const getThumbnail = async (
     const id = +req.params.id;
     const currentUser = req.user;
     if (currentUser) {
-      const fileData = await filesModel.findById(id, currentUser.id);
+      const fileData = await filesModel.findById(id);
 
       if (fileData) {
         const dirname = path.resolve();

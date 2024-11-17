@@ -6,7 +6,6 @@ import {
   getUsers,
   updateUser,
 } from "../controllers/usersController";
-import { isAdmin } from "../middleWare/isAdmin";
 
 export const usersRouter = Router();
 
@@ -14,6 +13,6 @@ usersRouter.get("/", getUsers);
 
 usersRouter.get("/:id", getUser);
 
-usersRouter.delete("/:id", isAdmin, deleteUser);
+usersRouter.delete("/:id", deleteUser);
 
-usersRouter.put("/:id", isAdmin, updateUser);
+usersRouter.put("/:id", updateUser);

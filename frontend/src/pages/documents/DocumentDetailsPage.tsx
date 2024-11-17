@@ -56,7 +56,8 @@ const DocumentDetailsPage = () => {
           {doc && t(`documents.type.${doc.type}`)}
         </div>
         <div>
-          <span className='font-bold'>{t('documents.detailsPage.public')}{doc?.public_document ? t('yes') : t('no')}</span>
+          <span className='font-bold'>{t('documents.detailsPage.public')}</span>
+          {doc?.public_document ? t('yes') : t('no')}
         </div>
         <div className='font-bold'>{t('documents.detailsPage.content')}</div>
         <div className='overflow-y-auto h-72 my-2'>{doc?.content}</div>

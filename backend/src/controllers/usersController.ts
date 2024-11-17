@@ -9,6 +9,7 @@ import {
 } from "../interfaces";
 import { STATUS } from "../statusCodes";
 import { UsersModel } from "../models/UsersModel";
+import { USER_ROLES } from "../utils/userRoles";
 
 const usersModel = new UsersModel(db);
 export const getUsers = async (
@@ -49,7 +50,8 @@ export const deleteUser = async (
   console.log("DELETE USER CALLED");
   try {
     const id = +req.params.id;
-    const isAdmin = !!req.isAdmin;
+    const user = req.user;
+    const isAdmin = user?.role === USER_ROLES.ADMIN;
     if (!isAdmin) {
       res
         .status(STATUS.UNAUTHORIZED_401)
@@ -75,7 +77,8 @@ export const updateUser = async (
   try {
     const id = +req.params.id;
     const data = req.body;
-    const isAdmin = !!req.isAdmin;
+    const user = req.user;
+    const isAdmin = user?.role === USER_ROLES.ADMIN;
     const updatedUser = await usersModel.update(id, data, isAdmin);
     if (updatedUser) {
       res.status(STATUS.OK_200).json(updatedUser);

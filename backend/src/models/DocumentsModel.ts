@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import { IDocumentInputModel, IDocumentViewModel } from "../interfaces";
+import { Console } from "console";
 
 const documentTypes: Record<string, string> = {
   "1": "NOTE",
@@ -10,14 +11,21 @@ const documentTypes: Record<string, string> = {
 };
 
 interface IDocumentsModel {
-  findAll(currentUserId: number): Promise<IDocumentViewModel[]>;
-  findAllForAdmin(): Promise<IDocumentViewModel[]>;
-  findById(
+  findAllForUser(currentUserId: number): Promise<IDocumentViewModel[]>;
+  findAll(): Promise<IDocumentViewModel[]>;
+  findByIdForUser(
     id: number,
     currentUserId: number
   ): Promise<IDocumentViewModel | null>;
-  removeById(currentUserId: number, id: number): Promise<boolean>;
+  findById(
+    id: number,
+  ): Promise<IDocumentViewModel | null>;
+  removeById(id: number): Promise<boolean>;
   update(
+    id: number,
+    data: IDocumentInputModel
+  ): Promise<IDocumentViewModel | null>;
+  updateForUser(
     currentUserId: number,
     id: number,
     data: IDocumentInputModel
@@ -35,7 +43,7 @@ export class DocumentsModel implements IDocumentsModel {
     this.database = db;
   }
 
-  async findAll(currentUserId: number): Promise<IDocumentViewModel[]> {
+  async findAllForUser(currentUserId: number): Promise<IDocumentViewModel[]> {
     const data = await this.database.query(`SELECT * FROM documents
         WHERE ${currentUserId}=ANY(available_for)
         OR  public_document = true OR author_id = ${currentUserId}`);
@@ -65,7 +73,7 @@ export class DocumentsModel implements IDocumentsModel {
     return documentsView;
   }
 
-  async findAllForAdmin(): Promise<IDocumentViewModel[]> {
+  async findAll(): Promise<IDocumentViewModel[]> {
     const data = await this.database.query("SELECT * FROM documents");
     const documentsView = await Promise.all(
       data.rows.map(async (doc) => {
@@ -92,7 +100,7 @@ export class DocumentsModel implements IDocumentsModel {
     return documentsView;
   }
 
-  async findById(
+  async findByIdForUser(
     id: number,
     currentUserId: number
   ): Promise<IDocumentViewModel | null> {
@@ -114,9 +122,37 @@ export class DocumentsModel implements IDocumentsModel {
     return {...requestedDocument, author: username};
   }
 
-  async removeById(currentUserId: number, id: number): Promise<boolean> {
+  async findById(
+    id: number,
+  ): Promise<IDocumentViewModel | null> {
+    const data = await this.database.query(
+      `SELECT * FROM documents WHERE id = $1`,
+      [id]
+    );
+    if (data.rows.length === 0) {
+      return null;
+    }
+    const requestedDocument = data.rows[0];
+    const author_id = requestedDocument.author_id;
+    const authorData = await this.database.query(
+      "SELECT * FROM users where id = $1",
+      [author_id]
+    );
+    const username = authorData.rows[0].username;
+    return {...requestedDocument, author: username};
+  }
+
+  async removeByIdForUser(currentUserId: number, id: number): Promise<boolean> {
     const deletedData = await this.database.query(
       `DELETE FROM documents WHERE id = $1 AND author_id = ${currentUserId}`,
+      [id]
+    );
+    return !!deletedData.rowCount;
+  }
+
+  async removeById(id: number): Promise<boolean> {
+    const deletedData = await this.database.query(
+      `DELETE FROM documents WHERE id = $1`,
       [id]
     );
     return !!deletedData.rowCount;
@@ -151,7 +187,7 @@ export class DocumentsModel implements IDocumentsModel {
     return createdDocument.rows[0];
   }
 
-  async update(
+  async updateForUser(
     currentUserId: number,
     id: number,
     data: IDocumentInputModel
@@ -164,6 +200,38 @@ export class DocumentsModel implements IDocumentsModel {
       `UPDATE documents
         SET title = $1, number = $2, type = $3, content = $4, public_document = $5, available_for = $6, update_date = $7
         WHERE id = $8 AND author_id = ${currentUserId}
+        RETURNING *`,
+      [
+        title,
+        number,
+        type,
+        content,
+        public_document,
+        available_for,
+        update_date,
+        id,
+      ]
+    );
+    if (updatedDocumentData.rows.length === 0) {
+      return null;
+    }
+    const updatedDocument = updatedDocumentData.rows[0];
+
+    return updatedDocument;
+  }
+
+  async update(
+    id: number,
+    data: IDocumentInputModel
+  ): Promise<IDocumentViewModel | null> {
+    const { title, number, type_id, content, public_document, available_for } =
+      data;
+    const update_date = new Date().toISOString();
+    const type = documentTypes[type_id] || documentTypes.default;
+    const updatedDocumentData = await this.database.query(
+      `UPDATE documents
+        SET title = $1, number = $2, type = $3, content = $4, public_document = $5, available_for = $6, update_date = $7
+        WHERE id = $8
         RETURNING *`,
       [
         title,

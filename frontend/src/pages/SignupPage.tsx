@@ -148,7 +148,7 @@ export const SignupPage = () => {
             })}
           />
           {signupFailed && (
-            <ErrorMessage className='bottom-16'>
+            <ErrorMessage className='bottom-14 sm:bottom-16 md:bottom-20'>
               {t('errorMessages.userExists')}
             </ErrorMessage>
           )}
@@ -156,6 +156,7 @@ export const SignupPage = () => {
             disabled={buttonDisabled}
             type='submit'
             variant='primary'
+            className='mt-5 md:mt-0'
           >
             {t('signupPage.button')}
           </ButtonComponent>

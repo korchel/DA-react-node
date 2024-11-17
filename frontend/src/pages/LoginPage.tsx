@@ -142,7 +142,7 @@ export const LoginPage = () => {
             disabled={buttonDisabled}
             type='submit'
             variant='primary'
-            className='mt-4 md:mt-0'
+            className='mt-5 md:mt-0'
           >
             {t('loginPage.button')}
           </ButtonComponent>
