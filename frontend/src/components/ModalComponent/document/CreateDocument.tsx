@@ -46,6 +46,7 @@ export const CreateDocument = () => {
     formState: { errors },
     setValue,
     setFocus,
+    watch,
   } = useForm<IDocForm>({
     defaultValues: { public_document: false, available_for: [] },
     resolver: zodResolver(createDocFormSchema),
@@ -54,7 +55,7 @@ export const CreateDocument = () => {
   const [createDoc] = useCreateDocMutation();
   const { data: users } = getUsers();
   const options = users?.map((user) => ({
-    label: user.name,
+    label: user.username,
     value: user.id,
   })) ?? [{ label: '', value: 0 }];
 
@@ -115,6 +116,7 @@ export const CreateDocument = () => {
       <Controller
         control={control}
         name='available_for'
+        
         render={({ field }) => (
           <MultiSelectComponent
             {...field}
@@ -123,6 +125,7 @@ export const CreateDocument = () => {
             onChange={field.onChange}
             selectOptions={options}
             required={false}
+            disabled={watch("public_document")}
           />
         )}
       />
@@ -131,6 +134,7 @@ export const CreateDocument = () => {
           label={t('documents.modal.form.labels.publicDocument')}
           {...register('public_document')}
           onChange={(e) => setValue('public_document', e.target.checked)}
+          disabled={watch("available_for")?.length !== 0}
         />
         <ButtonComponent type='submit' variant='primary'>
           {t('documents.modal.create.button')}

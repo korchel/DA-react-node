@@ -170,9 +170,7 @@ export const TableContainer = ({
                     }
                     return (
                       <Td key={index}>
-                        {param instanceof Date
-                          ? param.toLocaleDateString()
-                          : param}
+                        {param}
                       </Td>
                     );
                   })}

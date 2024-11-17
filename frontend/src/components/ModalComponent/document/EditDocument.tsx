@@ -61,7 +61,7 @@ export const EditDocument = () => {
   };
 
   const availableForOptions = users?.map((user) => ({
-    label: user.name,
+    label: user.username,
     value: user.id,
   })) ?? [{ label: '', value: 0 }];
   const {
@@ -70,6 +70,7 @@ export const EditDocument = () => {
     handleSubmit,
     formState: { errors, isDirty },
     setValue,
+    watch,
   } = useForm<IDocForm>({
     defaultValues,
     resolver: zodResolver(editDocFormSchema),
@@ -138,6 +139,7 @@ export const EditDocument = () => {
             selectOptions={availableForOptions}
             placeholder={t('documents.modal.form.placeholders.availableFor')}
             required={false}
+            disabled={watch("public_document")}
           />
         )}
       />
@@ -151,6 +153,7 @@ export const EditDocument = () => {
               checked={!!field.value}
               label={t('documents.modal.form.labels.publicDocument')}
               onChange={(e) => setValue('public_document', e.target.checked)}
+              disabled={watch("available_for")?.length !== 0}
             />
           )}
         />

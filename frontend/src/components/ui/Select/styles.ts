@@ -67,7 +67,8 @@ export const classNames:
   multiValue: () =>
     'text-secondary dark:text-whiteDark bg-primary dark:bg-primaryDark',
   multiValueLabel: () =>
-    'text-secondary dark:text-whiteDark bg-primary dark:bg-primaryDark',
+    'text-secondary dark:text-whiteDark bg-primary dark:bg-primaryDark ',
+  multiValueRemove: () => 'hover:text-secondaryHover hover:bg-primary dark:hover:text-whiteDarkHover dark:hover:bg-primaryDark',
   clearIndicator: () => 'text-secondary dark:text-whiteDark',
   dropdownIndicator: () => 'text-secondary dark:text-whiteDark',
   indicatorSeparator: () => 'bg-secondary dark:bg-whiteDark',

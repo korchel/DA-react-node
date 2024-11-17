@@ -6,6 +6,8 @@ import { loginPage } from './loginPage';
 import { error } from './error';
 
 export const ru = {
+  yes: 'да',
+  no: 'нет',
   pageDummy: 'Здесь пока ничего нет. Зайдите попозже.',
   header: {
     english: 'Английский',

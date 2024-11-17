@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import clsx from 'clsx';
 import {
   DetailedHTMLProps,
   ForwardedRef,
@@ -15,17 +16,18 @@ interface ICheckBox
   onChange?: (e: any) => void;
   value?: any;
   checked?: boolean;
+  disabled?: boolean;
 }
 
 export const CheckBox = forwardRef(
   (
-    { label, value, checked, onChange, ...props }: ICheckBox,
+    { label, value, checked, onChange, disabled = false, ...props }: ICheckBox,
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
       <label
         htmlFor={label}
-        className='flex gap-1 justify-between items-center cursor-pointer'
+        className={clsx('flex gap-1 justify-between items-center', !disabled && 'cursor-pointer')}
       >
         {label}
         <input
@@ -36,6 +38,7 @@ export const CheckBox = forwardRef(
           value={value}
           className='absolute opacity-0 h-0 w-0 peer'
           ref={ref}
+          disabled={disabled}
           {...props}
         />
         <span

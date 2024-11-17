@@ -10,7 +10,7 @@ export const users = {
     userName: 'Имя пользователя',
     name: 'Имя',
     lastName: 'Фамилия',
-    roles: 'Роли',
+    role: 'Роль',
     registration: 'Дата регистрации',
   },
   roles: {
@@ -24,9 +24,10 @@ export const users = {
     name: 'Имя: ',
     lastName: 'Фамилия: ',
     email: 'e-mail: ',
-    roles: 'Роли: ',
+    role: 'Роль',
     delete: 'Удалить пользователя',
     edit: 'Редактировать данные',
+    registration: 'Дата регистрации',
   },
   modal: {
     title: {

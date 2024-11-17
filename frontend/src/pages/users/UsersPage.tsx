@@ -30,7 +30,7 @@ export const UsersPage = () => {
       sortable: true,
     },
     {
-      label: t('users.tableHeader.roles'),
+      label: t('users.tableHeader.role'),
       accessor: 'roles',
       sortable: false,
     },

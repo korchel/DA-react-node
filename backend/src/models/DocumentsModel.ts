@@ -105,7 +105,13 @@ export class DocumentsModel implements IDocumentsModel {
       return null;
     }
     const requestedDocument = data.rows[0];
-    return requestedDocument;
+    const author_id = requestedDocument.author_id;
+    const authorData = await this.database.query(
+      "SELECT * FROM users where id = $1",
+      [author_id]
+    );
+    const username = authorData.rows[0].username;
+    return {...requestedDocument, author: username};
   }
 
   async removeById(currentUserId: number, id: number): Promise<boolean> {

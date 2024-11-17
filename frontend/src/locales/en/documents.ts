@@ -28,6 +28,7 @@ export const documents = {
     number: 'Number: ',
     author: 'Author: ',
     type: 'Type: ',
+    public: 'Public document: ',
     content: 'Content: ',
     creationDate: 'Creation date: ',
     updateDate: 'Update date: ',

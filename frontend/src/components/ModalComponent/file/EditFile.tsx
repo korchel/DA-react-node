@@ -42,7 +42,7 @@ export const EditFile = () => {
     type_id: null,
   };
 
-  const { control, handleSubmit, setValue } = useForm<IEditFileForm>({
+  const { control, handleSubmit, setValue, watch } = useForm<IEditFileForm>({
     defaultValues,
   });
   const availableForOptions = users?.map((user) => ({
@@ -84,6 +84,7 @@ export const EditFile = () => {
             selectOptions={availableForOptions}
             placeholder={t('files.modal.form.placeholders.availableFor')}
             required={false}
+            disabled={watch("public_file")}
           />
         )}
       />
@@ -97,6 +98,7 @@ export const EditFile = () => {
               checked={!!field.value}
               label={t('files.modal.form.labels.publicFile')}
               onChange={(e) => setValue('public_file', e.target.checked)}
+              disabled={watch("available_for")?.length !== 0}
             />
           )}
         />

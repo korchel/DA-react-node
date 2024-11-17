@@ -16,6 +16,7 @@ interface ISelectInputProps {
   value: (number | string)[] | undefined;
   label?: string;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export const MultiSelectComponent = forwardRef(
@@ -28,6 +29,7 @@ export const MultiSelectComponent = forwardRef(
       error,
       value,
       required = true,
+      disabled = false,
       ...props
     }: ISelectInputProps,
     ref: ForwardedRef<null>,
@@ -45,6 +47,7 @@ export const MultiSelectComponent = forwardRef(
             onChange={handleSelect}
             options={selectOptions}
             placeholder={placeholder}
+            isDisabled={disabled}
             isMulti
             value={selectOptions.filter((option) =>
               value?.includes(option.value),

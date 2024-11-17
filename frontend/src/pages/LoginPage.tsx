@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 
 import {
   ButtonComponent,
@@ -13,6 +14,9 @@ import {
 import { routes } from '../routes';
 import { useAuth } from '../context/AuthContext';
 import { normalizeI18nString } from '../utils/normalizeI18nString';
+import { usersApi } from '../store/usersApi';
+import { docsApi } from '../store/docsApi';
+import { filesApi } from '../store/filesApi';
 
 interface ILoginData {
   username: string;
@@ -28,6 +32,7 @@ export const LoginPage = () => {
     formState: { errors },
   } = useForm<ILoginData>({ mode: 'onSubmit', reValidateMode: 'onSubmit' });
   const { logIn } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const [authFailed, setauthFailed] = useState<boolean>(false);
@@ -57,6 +62,9 @@ export const LoginPage = () => {
       .then((data) => {
         if (data.user) {
           const { role, id, username } = data.user;
+          dispatch(usersApi.util.resetApiState());
+          dispatch(docsApi.util.resetApiState());
+          dispatch(filesApi.util.resetApiState());
           logIn({ role, id, username });
           navigate(routes.documentsRoute());
         } else {

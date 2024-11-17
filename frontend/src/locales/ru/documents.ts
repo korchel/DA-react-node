@@ -29,6 +29,7 @@ export const documents = {
     number: 'Номер: ',
     author: 'Автор: ',
     type: 'Тип: ',
+    public: 'Доступен всем: ',
     content: 'Содержание: ',
     creationDate: 'Дата создания: ',
     updateDate: 'Дата обновления: ',

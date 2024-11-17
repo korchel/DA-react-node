@@ -9,11 +9,12 @@ import { openModal } from '../../store/modalSlice';
 import { useAuth } from '../../context/AuthContext';
 import { defineAbilityFor } from '../../casl/ability';
 import { Can } from '@casl/react';
+import { convirtDate } from '../../utils/convirtDate';
 
 export const UserDetailsPage = () => {
   const { id } = useParams();
   const { currentUser, isAuthenticated } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
 
   const { data: user, isLoading } = getUser(id);
@@ -57,8 +58,12 @@ export const UserDetailsPage = () => {
           {user?.email}
         </div>
         <div>
-          <span className='font-bold'>{t('users.detailsPage.roles')}</span>
-          {user && t(`users.roles.${user?.role}`)}
+          <span className='font-bold'>{t('users.detailsPage.role') + ' '}</span>
+          {user && t(`users.roles.${user.role}`)}
+        </div>
+        <div>
+          <span className='font-bold'>{t('users.detailsPage.registration') + ' '}</span>
+          {user && convirtDate(user.creation_date, i18n.language)}
         </div>
       </Card.Body>
       <Card.Footer>

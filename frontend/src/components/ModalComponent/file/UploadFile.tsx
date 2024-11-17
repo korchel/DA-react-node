@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +35,7 @@ export const UploadFile = () => {
   const { data: users } = getUsers();
   const [uploadFile] = useUploadFileMutation();
   const availableForOptions = users?.map((user) => ({
-    label: user.name,
+    label: user.username,
     value: user.id,
   })) ?? [{ label: '', value: 0 }];
   const {
@@ -43,6 +43,7 @@ export const UploadFile = () => {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<IFileForm>({
     defaultValues,
     resolver: zodResolver(fileUploadSchema),
@@ -96,6 +97,7 @@ export const UploadFile = () => {
             selectOptions={availableForOptions}
             placeholder={t('files.modal.form.placeholders.availableFor')}
             required={false}
+            disabled={watch("params.public_file")}
           />
         )}
       />
@@ -109,6 +111,7 @@ export const UploadFile = () => {
               checked={!!field.value}
               label={t('files.modal.form.labels.publicFile')}
               onChange={(e) => setValue('params.public_file', e.target.checked)}
+              disabled={watch("params.available_for")?.length !== 0}
             />
           )}
         />

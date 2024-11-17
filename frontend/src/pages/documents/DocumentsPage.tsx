@@ -44,12 +44,12 @@ export const DocumentsPage = () => {
     },
     {
       label: t('documents.tableHeader.creationDate'),
-      accessor: 'creationDate',
+      accessor: 'update_date',
       sortable: true,
     },
     {
       label: t('documents.tableHeader.updateDate'),
-      accessor: 'updateDate',
+      accessor: 'update_date',
       sortable: true,
     },
   ];

@@ -15,7 +15,7 @@ export const createDocFormSchema: ZodType<IDocForm> = z.object({
       required_error: 'errorMessages.required',
     })
     .trim()
-    .min(2, { message: 'errorMessages.docTitleLength' })
+    .min(2, { message: 'errorMessages.required' })
     .max(50, { message: 'errorMessages.docTitleLength' }),
   number: z.coerce.number().positive({
     message: 'errorMessages.required',

@@ -6,6 +6,8 @@ import { loginPage } from './loginPage';
 import { error } from './error';
 
 export const en = {
+  yes: 'yes',
+  no: 'no',
   pageDummy: "There's nothing here yet. Come back later.",
   header: {
     english: 'English',

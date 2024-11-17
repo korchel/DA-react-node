@@ -18,7 +18,7 @@ const DocumentDetailsPage = () => {
   const dispatch = useDispatch();
 
   const { data: doc, isLoading } = getDoc(id);
-
+  console.log(doc)
   const ability = defineAbilityFor({
     user: { ...currentUser, isAuthenticated },
     entity: { author: doc?.author },
@@ -54,6 +54,9 @@ const DocumentDetailsPage = () => {
         <div>
           <span className='font-bold'>{t('documents.detailsPage.type')}</span>
           {doc && t(`documents.type.${doc.type}`)}
+        </div>
+        <div>
+          <span className='font-bold'>{t('documents.detailsPage.public')}{doc?.public_document ? t('yes') : t('no')}</span>
         </div>
         <div className='font-bold'>{t('documents.detailsPage.content')}</div>
         <div className='overflow-y-auto h-72 my-2'>{doc?.content}</div>
