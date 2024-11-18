@@ -20,6 +20,7 @@ interface IUserModel {
   ): Promise<IUserViewModel>;
   register(data: ISignUpInputModel): Promise<IUserViewModel | null>;
   authenticate(data: ISigninInputModel): Promise<IUser | null>;
+  getUsernames(ids: number[]): Promise<{ username: string; id: number }[]>;
 }
 
 export class UsersModel implements IUserModel {
@@ -63,6 +64,21 @@ export class UsersModel implements IUserModel {
       role,
       creation_date,
     };
+  }
+
+  async getUsernames(
+    ids: number[]
+  ): Promise<{ username: string; id: number }[]> {
+    const availableForData = await Promise.all(
+      ids.map(async (userId: number) => {
+        const userData = await this.database.query(
+          "SELECT id, username FROM users WHERE id = $1",
+          [userId]
+        );
+        return userData.rows[0];
+      })
+    );
+    return availableForData;
   }
 
   async removeById(id: number): Promise<boolean> {

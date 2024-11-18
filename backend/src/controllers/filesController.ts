@@ -65,7 +65,22 @@ export const getFile = async (
     const id = +req.params.id;
     const currentUser = req.user;
     if (currentUser) {
-      const foundFile = await filesModel.findById(id);
+      const { id: userId, role } = currentUser;
+      let foundFile = null;
+      switch (role) {
+        case USER_ROLES.ADMIN: {
+          foundFile = await filesModel.findById(id);
+          break;
+        }
+        case USER_ROLES.MODER: {
+          foundFile = await filesModel.findById(id);
+          break;
+        }
+        default: {
+          foundFile = await filesModel.findByIdForUser(id, userId);
+          break;
+        }
+      }
       if (foundFile) {
         res.status(STATUS.OK_200).json(foundFile);
       } else {

@@ -10,6 +10,16 @@ import { useAuth } from '../../context/AuthContext';
 import { defineAbilityFor } from '../../casl/ability';
 import { Can } from '@casl/react';
 import { convirtDate } from '../../utils/convirtDate';
+import { normalizeI18nString } from '../../utils/normalizeI18nString';
+
+const Item = ({ title, content }) => {
+  return (
+    <div>
+      <span className='font-bold'>{title}</span>
+      {content}
+    </div>
+  );
+};
 
 const DocumentDetailsPage = () => {
   const { id } = useParams();
@@ -18,7 +28,7 @@ const DocumentDetailsPage = () => {
   const dispatch = useDispatch();
 
   const { data: doc, isLoading } = getDoc(id);
-  console.log(doc)
+  console.log(doc?.available_for);
   const ability = defineAbilityFor({
     user: { ...currentUser, isAuthenticated },
     entity: { author: doc?.author },
@@ -43,10 +53,31 @@ const DocumentDetailsPage = () => {
         <span className='text-highlight'>{doc?.title}</span>
       </Card.Header>
       <Card.Body className=''>
-        <div>
-          <span className='font-bold'>{t('documents.detailsPage.number')}</span>
-          {doc?.number}
-        </div>
+        {doc && (
+          <>
+            <Item
+              title={t('documents.detailsPage.number')}
+              content={doc.number}
+            />
+
+            <Item
+              title={t('documents.detailsPage.available')}
+              content={
+                doc.available_for.length > 0
+                  ? doc.available_for.map((user) => user.username).join(', ')
+                  : t(
+                      normalizeI18nString(
+                        [
+                          'documents.detailsPage.forNoone',
+                          'documents.detailsPage.forEverybody',
+                        ][+doc.public_document],
+                      ),
+                    )
+              }
+            />
+          </>
+        )}
+
         <div>
           <span className='font-bold'>{t('documents.detailsPage.author')}</span>
           {doc?.author}
@@ -55,10 +86,7 @@ const DocumentDetailsPage = () => {
           <span className='font-bold'>{t('documents.detailsPage.type')}</span>
           {doc && t(`documents.type.${doc.type}`)}
         </div>
-        <div>
-          <span className='font-bold'>{t('documents.detailsPage.public')}</span>
-          {doc?.public_document ? t('yes') : t('no')}
-        </div>
+
         <div className='font-bold'>{t('documents.detailsPage.content')}</div>
         <div className='overflow-y-auto h-72 my-2'>{doc?.content}</div>
         <div>

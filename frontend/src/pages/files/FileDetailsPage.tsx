@@ -76,10 +76,7 @@ const FileDetailsPage = () => {
             <span className='font-bold'>{t('files.detailsPage.author')}</span>
             {file?.author}
           </div>
-          <div>
-            <span className='font-bold'>{t('documents.detailsPage.public')}</span>
-            {file?.public_file ? t('yes') : t('no')}
-          </div>
+
           <div>
             <span className='font-bold'>
               {t('files.detailsPage.creationDate')}
@@ -87,29 +84,31 @@ const FileDetailsPage = () => {
             {file && convirtDate(file?.creation_date, i18n.language)}
           </div>
         </div>
-        {file?.filetype === '.jpeg' || file?.filetype === '.jpg' || file?.filetype === '.png' &&
-          <div className='flex flex-col gap-4'>
-            <div className='w-24 h-24 border-white dark:border-whiteDark border-2 rounded-sm'>
-              <img
-                src={routes.thumbnailPath(file?.id)}
-                alt={file?.filename}
-                className='w-full h-full object-cover'
-              />
+        {file?.filetype === '.jpeg' ||
+          file?.filetype === '.jpg' ||
+          (file?.filetype === '.png' && (
+            <div className='flex flex-col gap-4'>
+              <div className='w-24 h-24 border-white dark:border-whiteDark border-2 rounded-sm'>
+                <img
+                  src={routes.thumbnailPath(file?.id)}
+                  alt={file?.filename}
+                  className='w-full h-full object-cover'
+                />
+              </div>
+              <div className='flex justify-between'>
+                <ActionButton
+                  actionType='download'
+                  title={t('download')}
+                  onClick={(event) => handleDownload(event, id)}
+                />
+                <ActionButton
+                  actionType='overview'
+                  title={t('see')}
+                  onClick={(event) => handleOverview(event, id)}
+                />
+              </div>
             </div>
-            <div className='flex justify-between'>
-              <ActionButton
-                actionType='download'
-                title={t('download')}
-                onClick={(event) => handleDownload(event, id)}
-              />
-              <ActionButton
-                actionType='overview'
-                title={t('see')}
-                onClick={(event) => handleOverview(event, id)}
-              />
-            </div>
-          </div>
-        }
+          ))}
       </Card.Body>
       <Card.Footer>
         <Can I='edit' a='file' ability={ability}>

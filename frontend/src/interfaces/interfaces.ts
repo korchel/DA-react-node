@@ -51,7 +51,7 @@ export interface IDocument {
   creation_date: string;
   update_date: string;
   public_document: boolean;
-  available_for: number[];
+  available_for: { id: number; username: string }[];
 }
 
 // FILES

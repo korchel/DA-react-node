@@ -56,7 +56,7 @@ export const EditDocument = () => {
     content: doc?.content,
     author: doc?.author,
     type: doc?.type,
-    available_for: doc?.available_for,
+    available_for: doc?.available_for.map((user) => user.id),
     public_document: !!doc?.public_document,
   };
 
@@ -139,7 +139,7 @@ export const EditDocument = () => {
             selectOptions={availableForOptions}
             placeholder={t('documents.modal.form.placeholders.availableFor')}
             required={false}
-            disabled={watch("public_document")}
+            disabled={watch('public_document')}
           />
         )}
       />
@@ -153,7 +153,7 @@ export const EditDocument = () => {
               checked={!!field.value}
               label={t('documents.modal.form.labels.publicDocument')}
               onChange={(e) => setValue('public_document', e.target.checked)}
-              disabled={watch("available_for")?.length !== 0}
+              disabled={watch('available_for')?.length !== 0}
             />
           )}
         />

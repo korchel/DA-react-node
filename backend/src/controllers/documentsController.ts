@@ -56,11 +56,25 @@ export const getDocument = async (
   try {
     const id = +req.params.id;
     const currentUser = req.user;
-
     if (currentUser) {
-      const requestedDocument = await documentsModel.findById(id);
-      if (requestedDocument) {
-        res.status(STATUS.OK_200).json(requestedDocument);
+      const { id: userId, role } = currentUser;
+      let foundDocument = null;
+      switch (role) {
+        case USER_ROLES.ADMIN: {
+          foundDocument = await documentsModel.findById(id);
+          break;
+        }
+        case USER_ROLES.MODER: {
+          foundDocument = await documentsModel.findById(id);
+          break;
+        }
+        default: {
+          foundDocument = await documentsModel.findByIdForUser(id, userId);
+          break;
+        }
+      }
+      if (foundDocument) {
+        res.status(STATUS.OK_200).json(foundDocument);
       } else {
         res
           .status(STATUS.FORBIDDEN_403)
@@ -157,13 +171,17 @@ export const updateDocument = async (
           return;
         }
         default: {
-          const updatedDocument = await documentsModel.updateForUser(userId, id, data);
+          const updatedDocument = await documentsModel.updateForUser(
+            userId,
+            id,
+            data
+          );
           if (updatedDocument) {
             res.status(STATUS.OK_200).json(updatedDocument);
           } else {
-          res
-            .status(STATUS.FORBIDDEN_403)
-            .json({ message: "You are not the author" });
+            res
+              .status(STATUS.FORBIDDEN_403)
+              .json({ message: "You are not the author" });
           }
         }
       }

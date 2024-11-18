@@ -17,9 +17,7 @@ interface IDocumentsModel {
     id: number,
     currentUserId: number
   ): Promise<IDocumentViewModel | null>;
-  findById(
-    id: number,
-  ): Promise<IDocumentViewModel | null>;
+  findById(id: number): Promise<IDocumentViewModel | null>;
   removeById(id: number): Promise<boolean>;
   update(
     id: number,
@@ -119,12 +117,25 @@ export class DocumentsModel implements IDocumentsModel {
       [author_id]
     );
     const username = authorData.rows[0].username;
-    return {...requestedDocument, author: username};
+
+    const availableForData = await Promise.all(
+      requestedDocument.available_for.map(async (userId: number) => {
+        const userData = await this.database.query(
+          "SELECT id, username FROM users WHERE id = $1",
+          [userId]
+        );
+        return userData.rows[0];
+      })
+    );
+
+    return {
+      ...requestedDocument,
+      author: username,
+      available_for: availableForData,
+    };
   }
 
-  async findById(
-    id: number,
-  ): Promise<IDocumentViewModel | null> {
+  async findById(id: number): Promise<IDocumentViewModel | null> {
     const data = await this.database.query(
       `SELECT * FROM documents WHERE id = $1`,
       [id]
@@ -139,7 +150,22 @@ export class DocumentsModel implements IDocumentsModel {
       [author_id]
     );
     const username = authorData.rows[0].username;
-    return {...requestedDocument, author: username};
+
+    const availableForData = await Promise.all(
+      requestedDocument.available_for.map(async (userId: number) => {
+        const userData = await this.database.query(
+          "SELECT id, username FROM users WHERE id = $1",
+          [userId]
+        );
+        return userData.rows[0];
+      })
+    );
+
+    return {
+      ...requestedDocument,
+      author: username,
+      available_for: availableForData,
+    };
   }
 
   async removeByIdForUser(currentUserId: number, id: number): Promise<boolean> {

@@ -24,14 +24,14 @@ export interface IDocumentViewModel {
   creation_date: string;
   update_date: string;
   public_document: boolean;
-  available_for: number[];
+  available_for: { id: number; username: string }[];
 }
 
 export interface IDocument {
   id: number;
   title: string;
   number: number;
-  authorId: number;
+  author_id: number;
   type_id: IDocumentType;
   content: string;
   creation_date: string;
