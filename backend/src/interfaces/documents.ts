@@ -32,7 +32,7 @@ export interface IDocument {
   title: string;
   number: number;
   author_id: number;
-  type_id: IDocumentType;
+  type: IDocumentType;
   content: string;
   creation_date: string;
   update_date: string;

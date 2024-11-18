@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { IDocumentInputModel, IDocumentViewModel } from "../interfaces";
+import { IDocument, IDocumentInputModel, IDocumentViewModel } from "../interfaces";
 import { Console } from "console";
 
 const documentTypes: Record<string, string> = {
@@ -11,13 +11,13 @@ const documentTypes: Record<string, string> = {
 };
 
 interface IDocumentsModel {
-  findAllForUser(currentUserId: number): Promise<IDocumentViewModel[]>;
-  findAll(): Promise<IDocumentViewModel[]>;
+  findAllForUser(currentUserId: number): Promise<IDocument[]>;
+  findAll(): Promise<IDocument[]>;
   findByIdForUser(
     id: number,
     currentUserId: number
-  ): Promise<IDocumentViewModel | null>;
-  findById(id: number): Promise<IDocumentViewModel | null>;
+  ): Promise<IDocument | null>;
+  findById(id: number): Promise<IDocument | null>;
   removeById(id: number): Promise<boolean>;
   update(
     id: number,
@@ -41,24 +41,16 @@ export class DocumentsModel implements IDocumentsModel {
     this.database = db;
   }
 
-  async findAllForUser(currentUserId: number): Promise<IDocumentViewModel[]> {
-    const data = await this.database.query(`SELECT * FROM documents
+  async findAllForUser(currentUserId: number): Promise<IDocument[]> {
+    const documentsData = await this.database.query(`SELECT * FROM documents
         WHERE ${currentUserId}=ANY(available_for)
         OR  public_document = true OR author_id = ${currentUserId}`);
-
-    const documentsView = await Promise.all(
-      data.rows.map(async (doc) => {
-        const author_id = doc.author_id;
-        const authorData = await this.database.query(
-          "SELECT * FROM users where id = $1",
-          [author_id]
-        );
-        const username = authorData.rows[0].username;
-        return {
+    const documents = documentsData.rows.map((doc) => {
+      return {
           id: doc.id,
           title: doc.title,
           number: doc.number,
-          author: username,
+          author_id: doc.author_id,
           type: doc.type,
           content: doc.content,
           creation_date: doc.creation_date,
@@ -66,26 +58,19 @@ export class DocumentsModel implements IDocumentsModel {
           public_document: doc.public_document,
           available_for: doc.available_for,
         };
-      })
-    );
-    return documentsView;
+    });
+    return documents;
   }
 
-  async findAll(): Promise<IDocumentViewModel[]> {
+  async findAll(): Promise<IDocument[]> {
     const data = await this.database.query("SELECT * FROM documents");
     const documentsView = await Promise.all(
       data.rows.map(async (doc) => {
-        const author_id = doc.author_id;
-        const authorData = await this.database.query(
-          "SELECT * FROM users where id = $1",
-          [author_id]
-        );
-        const username = authorData.rows[0].username;
         return {
           id: doc.id,
           title: doc.title,
           number: doc.number,
-          author: username,
+          author_id: doc.author_id,
           type: doc.type,
           content: doc.content,
           creation_date: doc.creation_date,
@@ -101,7 +86,7 @@ export class DocumentsModel implements IDocumentsModel {
   async findByIdForUser(
     id: number,
     currentUserId: number
-  ): Promise<IDocumentViewModel | null> {
+  ): Promise<IDocument | null> {
     const data = await this.database.query(
       `SELECT * FROM documents WHERE id = $1
         AND (${currentUserId} = ANY(available_for) OR  public_document = true OR author_id = ${currentUserId})`,
@@ -111,31 +96,11 @@ export class DocumentsModel implements IDocumentsModel {
       return null;
     }
     const requestedDocument = data.rows[0];
-    const author_id = requestedDocument.author_id;
-    const authorData = await this.database.query(
-      "SELECT * FROM users where id = $1",
-      [author_id]
-    );
-    const username = authorData.rows[0].username;
 
-    const availableForData = await Promise.all(
-      requestedDocument.available_for.map(async (userId: number) => {
-        const userData = await this.database.query(
-          "SELECT id, username FROM users WHERE id = $1",
-          [userId]
-        );
-        return userData.rows[0];
-      })
-    );
-
-    return {
-      ...requestedDocument,
-      author: username,
-      available_for: availableForData,
-    };
+    return requestedDocument;
   }
 
-  async findById(id: number): Promise<IDocumentViewModel | null> {
+  async findById(id: number): Promise<IDocument | null> {
     const data = await this.database.query(
       `SELECT * FROM documents WHERE id = $1`,
       [id]
@@ -144,28 +109,8 @@ export class DocumentsModel implements IDocumentsModel {
       return null;
     }
     const requestedDocument = data.rows[0];
-    const author_id = requestedDocument.author_id;
-    const authorData = await this.database.query(
-      "SELECT * FROM users where id = $1",
-      [author_id]
-    );
-    const username = authorData.rows[0].username;
 
-    const availableForData = await Promise.all(
-      requestedDocument.available_for.map(async (userId: number) => {
-        const userData = await this.database.query(
-          "SELECT id, username FROM users WHERE id = $1",
-          [userId]
-        );
-        return userData.rows[0];
-      })
-    );
-
-    return {
-      ...requestedDocument,
-      author: username,
-      available_for: availableForData,
-    };
+    return requestedDocument;
   }
 
   async removeByIdForUser(currentUserId: number, id: number): Promise<boolean> {

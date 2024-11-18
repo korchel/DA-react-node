@@ -31,23 +31,24 @@ export const getFiles = async (
     const currentUser = req.user;
     if (currentUser) {
       const { id, role } = currentUser;
+      let foundFiles = null;
       switch (role) {
         case USER_ROLES.ADMIN: {
-          const data = await filesModel.findAll();
-          res.status(STATUS.OK_200).json(data);
-          return;
+          foundFiles = await filesModel.findAll();
+          res.status(STATUS.OK_200).json(foundFiles);
+          break;
         }
         case USER_ROLES.MODER: {
-          const data = await filesModel.findAll();
-          res.status(STATUS.OK_200).json(data);
-          return;
+          foundFiles = await filesModel.findAll();
+          res.status(STATUS.OK_200).json(foundFiles);
+          break;
         }
         default: {
-          const data = await filesModel.findAllForUser(id);
-          res.status(STATUS.OK_200).json(data);
-          return;
+          foundFiles = await filesModel.findAllForUser(id);
+          break;
         }
       }
+      res.status(STATUS.OK_200).json(foundFiles);
     } else {
       res.sendStatus(STATUS.FORBIDDEN_403);
     }

@@ -3,6 +3,7 @@ import {
   IDocumentInputModel,
   IDocumentViewModel,
   IdParam,
+  IUserViewModel,
   RequestWithBody,
   RequestWithParams,
   RequestWithParamsAndBody,
@@ -11,8 +12,10 @@ import { db } from "../db/db";
 import { STATUS } from "../statusCodes";
 import { DocumentsModel } from "../models/DocumentsModel";
 import { USER_ROLES } from "../utils/userRoles";
+import { UsersModel } from "../models/UsersModel";
 
 const documentsModel = new DocumentsModel(db);
+const usersModel = new UsersModel(db);
 
 export const getDocuments = async (
   req: Request,
@@ -23,23 +26,31 @@ export const getDocuments = async (
     const currentUser = req.user;
     if (currentUser) {
       const { id, role } = currentUser;
+      let foundDocuments = null;
       switch (role) {
         case USER_ROLES.ADMIN: {
-          const data = await documentsModel.findAll();
-          res.status(STATUS.OK_200).json(data);
-          return;
+          foundDocuments = await documentsModel.findAll();
+          break;
         }
         case USER_ROLES.MODER: {
-          const data = await documentsModel.findAll();
-          res.status(STATUS.OK_200).json(data);
-          return;
+          foundDocuments = await documentsModel.findAll();
+          break;
         }
         default: {
-          const data = await documentsModel.findAllForUser(id);
-          res.status(STATUS.OK_200).json(data);
-          return;
+          foundDocuments = await documentsModel.findAllForUser(id);
+          break;
         }
       }
+      const documentsView = await Promise.all(
+        foundDocuments.map(async (doc) => {
+          const { author_id, available_for } = doc;
+          const authorData = await usersModel.findById(author_id);
+          const { username } = authorData as IUserViewModel;
+          const availableForData = await usersModel.getUsernames(available_for);
+          return { ...doc, author: username, available_for: availableForData };
+        })
+      )
+      res.status(STATUS.OK_200).json(documentsView);
     } else {
       res.sendStatus(STATUS.FORBIDDEN_403);
     }
@@ -74,7 +85,12 @@ export const getDocument = async (
         }
       }
       if (foundDocument) {
-        res.status(STATUS.OK_200).json(foundDocument);
+        const { author_id, available_for } = foundDocument;
+        const availableForData = await usersModel.getUsernames(available_for);
+        const author = await usersModel.findById(author_id);
+        const authotUsername = author?.username;
+        const documentView = { ...foundDocument, author: authotUsername, available_for: availableForData };
+        res.status(STATUS.OK_200).json(documentView as IDocumentViewModel);
       } else {
         res
           .status(STATUS.FORBIDDEN_403)
