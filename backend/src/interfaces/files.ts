@@ -3,7 +3,7 @@ export interface IFile {
   filename: string;
   filetype: string;
   mimetype: string;
-  authorId: number;
+  author_id: number;
   available_for: number[];
   public_file: boolean;
   creation_date: string;
@@ -14,16 +14,13 @@ export interface IFile {
 
 export interface IFileViewModel {
   id: number;
-  filepath?: string;
   filetype: string;
   author: string;
-  available_for: number[];
+  available_for: { id: number; username: string }[];
   public_file: boolean;
   creation_date: string;
   update_date: string;
-  thumbnail_path?: string;
-  mimetype?: string;
-  filename?: string;
+  filename: string;
 }
 
 export interface IFileFormdataModel {

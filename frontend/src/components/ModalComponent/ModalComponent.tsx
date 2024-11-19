@@ -33,7 +33,7 @@ export const ModalComponent = () => {
   return (
     open && (
       <div
-        className='fixed inset-0 bg-slate-900/60 backdrop-blur overflow-y-auto
+        className='h-screen z-10 fixed inset-0 bg-slate-900/60 backdrop-blur overflow-y-auto
         flex flex-col items-center justify-center'
       >
         <div

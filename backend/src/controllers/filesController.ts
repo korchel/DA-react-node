@@ -14,13 +14,16 @@ import { removeFileFromFs } from "../utils/removeFileFromFs";
 import {
   IDocumentViewModel,
   IdParam,
+  IUserViewModel,
   RequestWithBody,
   RequestWithParams,
   RequestWithParamsAndBody,
 } from "../interfaces";
 import { USER_ROLES } from "../utils/userRoles";
+import { UsersModel } from "../models/UsersModel";
 
 const filesModel = new FilesModel(db);
+const usersModel = new UsersModel(db);
 
 export const getFiles = async (
   req: Request,
@@ -35,12 +38,10 @@ export const getFiles = async (
       switch (role) {
         case USER_ROLES.ADMIN: {
           foundFiles = await filesModel.findAll();
-          res.status(STATUS.OK_200).json(foundFiles);
           break;
         }
         case USER_ROLES.MODER: {
           foundFiles = await filesModel.findAll();
-          res.status(STATUS.OK_200).json(foundFiles);
           break;
         }
         default: {
@@ -48,7 +49,21 @@ export const getFiles = async (
           break;
         }
       }
-      res.status(STATUS.OK_200).json(foundFiles);
+      const filesView = await Promise.all(
+        foundFiles.map(async (file) => {
+          const { author_id, available_for } = file;
+          const authorData = await usersModel.findById(author_id);
+          const { username } = authorData as IUserViewModel;
+          const availableForData = await usersModel.getUsernames(available_for);
+          const { mimetype, filepath, thumbnail_path, ...fileView } = file;
+          return {
+            ...fileView,
+            author: username,
+            available_for: availableForData,
+          };
+        })
+      );
+      res.status(STATUS.OK_200).json(filesView);
     } else {
       res.sendStatus(STATUS.FORBIDDEN_403);
     }
@@ -83,7 +98,16 @@ export const getFile = async (
         }
       }
       if (foundFile) {
-        res.status(STATUS.OK_200).json(foundFile);
+        const { author_id, available_for } = foundFile;
+        const availableForData = await usersModel.getUsernames(available_for);
+        const author = await usersModel.findById(author_id);
+        const authotUsername = author?.username;
+        const documentView = {
+          ...foundFile,
+          author: authotUsername,
+          available_for: availableForData,
+        };
+        res.status(STATUS.OK_200).json(documentView as IFileViewModel);
       } else {
         res.status(STATUS.NOT_FOUND_404).json({ message: "No such file" });
       }
@@ -136,7 +160,9 @@ export const postFile = async (
       const filepath = file.path;
       const filename = file.originalname;
       console.log("FILE NAME", file);
-      const filetype = filename.substring(filename.lastIndexOf("."));
+      const filetype = filename
+        .substring(filename.lastIndexOf("."))
+        .toLowerCase();
       const thumbnail_path =
         "./public/thumbnails/" + "thumbnail-" + Date.now() + file.originalname;
       filesModel.create(
@@ -200,7 +226,8 @@ export const deleteFile = async (
         }
       }
       if (deletedFile) {
-        removeFileFromFs(deletedFile);
+        removeFileFromFs(deletedFile.filepath);
+        removeFileFromFs(deletedFile.thumbnail_path);
         res
           .status(STATUS.NO_CONTENT_204)
           .json({ message: "Successfully deleted!" });

@@ -1,6 +1,9 @@
 import { Pool } from "pg";
-import { IDocument, IDocumentInputModel, IDocumentViewModel } from "../interfaces";
-import { Console } from "console";
+import {
+  IDocument,
+  IDocumentInputModel,
+  IDocumentViewModel,
+} from "../interfaces";
 
 const documentTypes: Record<string, string> = {
   "1": "NOTE",
@@ -13,10 +16,7 @@ const documentTypes: Record<string, string> = {
 interface IDocumentsModel {
   findAllForUser(currentUserId: number): Promise<IDocument[]>;
   findAll(): Promise<IDocument[]>;
-  findByIdForUser(
-    id: number,
-    currentUserId: number
-  ): Promise<IDocument | null>;
+  findByIdForUser(id: number, currentUserId: number): Promise<IDocument | null>;
   findById(id: number): Promise<IDocument | null>;
   removeById(id: number): Promise<boolean>;
   update(
@@ -47,17 +47,17 @@ export class DocumentsModel implements IDocumentsModel {
         OR  public_document = true OR author_id = ${currentUserId}`);
     const documents = documentsData.rows.map((doc) => {
       return {
-          id: doc.id,
-          title: doc.title,
-          number: doc.number,
-          author_id: doc.author_id,
-          type: doc.type,
-          content: doc.content,
-          creation_date: doc.creation_date,
-          update_date: doc.update_date,
-          public_document: doc.public_document,
-          available_for: doc.available_for,
-        };
+        id: doc.id,
+        title: doc.title,
+        number: doc.number,
+        author_id: doc.author_id,
+        type: doc.type,
+        content: doc.content,
+        creation_date: doc.creation_date,
+        update_date: doc.update_date,
+        public_document: doc.public_document,
+        available_for: doc.available_for,
+      };
     });
     return documents;
   }

@@ -19,6 +19,8 @@ import {
 } from '../../../store/filesApi';
 import { routes } from '../../../routes';
 import { useGetUsersQuery as getUsers } from '../../../store/usersApi';
+import { getAvailableForOptions } from '../getAvailableForOptions';
+import { useAuth } from '../../../context/AuthContext';
 
 export interface IEditFileForm {
   available_for: number[];
@@ -31,13 +33,14 @@ export const EditFile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const id = useSelector(getCurrentDataId);
+  const { currentUser } = useAuth();
 
   const { data: users } = getUsers();
   const { data: file } = getFile(id);
   const [editFile] = useEditFileMutation();
 
   const defaultValues = {
-    available_for: file?.available_for,
+    available_for: file?.available_for.map((user) => user.id),
     public_file: file?.public_file,
     type_id: null,
   };
@@ -45,10 +48,7 @@ export const EditFile = () => {
   const { control, handleSubmit, setValue, watch } = useForm<IEditFileForm>({
     defaultValues,
   });
-  const availableForOptions = users?.map((user) => ({
-    label: user.name,
-    value: user.id,
-  })) ?? [{ label: '', value: 0 }];
+  const availableForOptions = getAvailableForOptions(users, currentUser);
 
   const onSubmit = (data: IEditFileForm) => {
     if (isEqual(data, defaultValues)) {
@@ -84,7 +84,7 @@ export const EditFile = () => {
             selectOptions={availableForOptions}
             placeholder={t('files.modal.form.placeholders.availableFor')}
             required={false}
-            disabled={watch("public_file")}
+            disabled={watch('public_file')}
           />
         )}
       />
@@ -98,7 +98,7 @@ export const EditFile = () => {
               checked={!!field.value}
               label={t('files.modal.form.labels.publicFile')}
               onChange={(e) => setValue('public_file', e.target.checked)}
-              disabled={watch("available_for")?.length !== 0}
+              disabled={watch('available_for')?.length !== 0}
             />
           )}
         />

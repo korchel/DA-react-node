@@ -1,4 +1,3 @@
- 
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +18,8 @@ import { closeModal } from '../../../store/modalSlice';
 import { routes } from '../../../routes';
 import { fileUploadSchema, IFileForm } from './fileUploadSchema';
 import { normalizeI18nString } from '../../../utils/normalizeI18nString';
+import { getAvailableForOptions } from '../getAvailableForOptions';
+import { useAuth } from '../../../context/AuthContext';
 
 const defaultValues = {
   params: {
@@ -31,13 +32,12 @@ export const UploadFile = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { currentUser } = useAuth();
 
   const { data: users } = getUsers();
   const [uploadFile] = useUploadFileMutation();
-  const availableForOptions = users?.map((user) => ({
-    label: user.username,
-    value: user.id,
-  })) ?? [{ label: '', value: 0 }];
+  const availableForOptions = getAvailableForOptions(users, currentUser);
+
   const {
     control,
     handleSubmit,
@@ -97,7 +97,7 @@ export const UploadFile = () => {
             selectOptions={availableForOptions}
             placeholder={t('files.modal.form.placeholders.availableFor')}
             required={false}
-            disabled={watch("params.public_file")}
+            disabled={watch('params.public_file')}
           />
         )}
       />
@@ -111,7 +111,7 @@ export const UploadFile = () => {
               checked={!!field.value}
               label={t('files.modal.form.labels.publicFile')}
               onChange={(e) => setValue('params.public_file', e.target.checked)}
-              disabled={watch("params.available_for")?.length !== 0}
+              disabled={watch('params.available_for')?.length !== 0}
             />
           )}
         />

@@ -61,7 +61,7 @@ export interface IFile {
   filename: string;
   filetype: string;
   author: string;
-  available_for: number[];
+  available_for: { id: number; username: string }[];
   public_file: boolean;
   creation_date: string;
   update_date: string;

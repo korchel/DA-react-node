@@ -29,12 +29,15 @@ import {
 } from './docFormSchema';
 import { DOCUMENT_TYPES } from '../../../constants';
 import { normalizeI18nString } from '../../../utils/normalizeI18nString';
+import { useAuth } from '../../../context/AuthContext';
+import { getAvailableForOptions } from '../getAvailableForOptions';
 
 export const EditDocument = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const id = useSelector(getCurrentDataId);
+  const { currentUser } = useAuth();
 
   const { data: users } = getUsers();
   const { data: doc } = getDoc(id);
@@ -60,10 +63,8 @@ export const EditDocument = () => {
     public_document: !!doc?.public_document,
   };
 
-  const availableForOptions = users?.map((user) => ({
-    label: user.username,
-    value: user.id,
-  })) ?? [{ label: '', value: 0 }];
+  const availableForOptions = getAvailableForOptions(users, currentUser);
+
   const {
     register,
     control,

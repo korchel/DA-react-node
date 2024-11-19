@@ -28,7 +28,7 @@ export const FileInput = forwardRef(
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     const [fileName, setFileName] = useState<string | undefined>(
-      '.pdf, .jpeg, .docx',
+      '.pdf, .png, .jpeg, .docx',
     );
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {

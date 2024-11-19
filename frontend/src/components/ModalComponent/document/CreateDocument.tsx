@@ -23,11 +23,14 @@ import { useEffect } from 'react';
 import { DOCUMENT_TYPES } from '../../../constants';
 import { IDocTypeSelectOption } from './docFormSchema';
 import { normalizeI18nString } from '../../../utils/normalizeI18nString';
+import { useAuth } from '../../../context/AuthContext';
+import { getAvailableForOptions } from '../getAvailableForOptions';
 
 export const CreateDocument = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { currentUser } = useAuth();
 
   const selectTypeOptions: IDocTypeSelectOption[] = [
     { value: DOCUMENT_TYPES.NOTE, label: t('documents.type.NOTE') },
@@ -54,10 +57,7 @@ export const CreateDocument = () => {
 
   const [createDoc] = useCreateDocMutation();
   const { data: users } = getUsers();
-  const options = users?.map((user) => ({
-    label: user.username,
-    value: user.id,
-  })) ?? [{ label: '', value: 0 }];
+  const availableForOptions = getAvailableForOptions(users, currentUser);
 
   const onSubmit = (data: IDocForm) => {
     createDoc(data)
@@ -116,16 +116,15 @@ export const CreateDocument = () => {
       <Controller
         control={control}
         name='available_for'
-        
         render={({ field }) => (
           <MultiSelectComponent
             {...field}
             placeholder={t('documents.modal.form.placeholders.availableFor')}
             label={t('documents.modal.form.labels.availableFor')}
             onChange={field.onChange}
-            selectOptions={options}
+            selectOptions={availableForOptions}
             required={false}
-            disabled={watch("public_document")}
+            disabled={watch('public_document')}
           />
         )}
       />
@@ -134,7 +133,7 @@ export const CreateDocument = () => {
           label={t('documents.modal.form.labels.publicDocument')}
           {...register('public_document')}
           onChange={(e) => setValue('public_document', e.target.checked)}
-          disabled={watch("available_for")?.length !== 0}
+          disabled={watch('available_for')?.length !== 0}
         />
         <ButtonComponent type='submit' variant='primary'>
           {t('documents.modal.create.button')}

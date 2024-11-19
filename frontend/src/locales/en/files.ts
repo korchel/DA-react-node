@@ -17,6 +17,9 @@ export const files = {
   detailsPage: {
     title: 'File ',
     name: 'Name: ',
+    available: 'Available for: ',
+    forEverybody: 'всех',
+    forNoone: 'никого',
     author: 'Author: ',
     type: 'Type: ',
     creationDate: 'Creation date: ',

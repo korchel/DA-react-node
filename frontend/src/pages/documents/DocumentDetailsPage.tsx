@@ -11,15 +11,7 @@ import { defineAbilityFor } from '../../casl/ability';
 import { Can } from '@casl/react';
 import { convirtDate } from '../../utils/convirtDate';
 import { normalizeI18nString } from '../../utils/normalizeI18nString';
-
-const Item = ({ title, content }) => {
-  return (
-    <div>
-      <span className='font-bold'>{title}</span>
-      {content}
-    </div>
-  );
-};
+import { Item } from '../../components/ui/Items';
 
 const DocumentDetailsPage = () => {
   const { id } = useParams();
@@ -59,7 +51,6 @@ const DocumentDetailsPage = () => {
               title={t('documents.detailsPage.number')}
               content={doc.number}
             />
-
             <Item
               title={t('documents.detailsPage.available')}
               content={
@@ -75,32 +66,28 @@ const DocumentDetailsPage = () => {
                     )
               }
             />
+            <Item
+              title={t('documents.detailsPage.author')}
+              content={doc.author}
+            />
+            <Item
+              title={t('documents.detailsPage.type')}
+              content={t(`documents.type.${doc.type}`)}
+            />
+            <div className='font-bold'>
+              {t('documents.detailsPage.content')}
+            </div>
+            <div className='overflow-y-auto h-72 my-2'>{doc.content}</div>
+            <Item
+              title={t('documents.detailsPage.creationDate')}
+              content={convirtDate(doc?.creation_date, i18n.language)}
+            />
+            <Item
+              title={t('documents.detailsPage.updateDate')}
+              content={convirtDate(doc?.update_date, i18n.language)}
+            />
           </>
         )}
-
-        <div>
-          <span className='font-bold'>{t('documents.detailsPage.author')}</span>
-          {doc?.author}
-        </div>
-        <div>
-          <span className='font-bold'>{t('documents.detailsPage.type')}</span>
-          {doc && t(`documents.type.${doc.type}`)}
-        </div>
-
-        <div className='font-bold'>{t('documents.detailsPage.content')}</div>
-        <div className='overflow-y-auto h-72 my-2'>{doc?.content}</div>
-        <div>
-          <span className='font-bold'>
-            {t('documents.detailsPage.creationDate')}
-          </span>
-          {convirtDate(doc?.creation_date, i18n.language)}
-        </div>
-        <div>
-          <span className='font-bold'>
-            {t('documents.detailsPage.updateDate')}
-          </span>
-          {convirtDate(doc?.update_date, i18n.language)}
-        </div>
       </Card.Body>
       <Card.Footer>
         <Can I='edit' a='document' ability={ability}>

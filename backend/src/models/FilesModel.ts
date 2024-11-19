@@ -1,22 +1,19 @@
 import { Pool } from "pg";
-import { IFile, IFileInputModel, IFileViewModel } from "../interfaces/files";
+import { IFile, IFileInputModel } from "../interfaces/files";
 
 interface IFilesModel {
-  findAllForUser(currentUserId: number): Promise<IFileViewModel[]>;
-  findAll(): Promise<IFileViewModel[]>;
-  findByIdForUser(id: number, currentUserId: number): Promise<IFileViewModel | null>;
-  findById(id: number): Promise<IFileViewModel | null>;
+  findAllForUser(currentUserId: number): Promise<IFile[]>;
+  findAll(): Promise<IFile[]>;
+  findByIdForUser(id: number, currentUserId: number): Promise<IFile | null>;
+  findById(id: number): Promise<IFile | null>;
   removeByIdForUser(currentUserId: number, id: number): Promise<IFile | null>;
   removeById(id: number): Promise<IFile | null>;
   updateForUser(
     currentUserId: number,
     id: number,
-    data: IFileInputModel
+    data: IFile
   ): Promise<boolean>;
-  update(
-    id: number,
-    data: IFileInputModel
-  ): Promise<boolean>;
+  update(id: number, data: IFileInputModel): Promise<boolean>;
   create(
     userId: number,
     filepath: string,
@@ -35,82 +32,24 @@ export class FilesModel implements IFilesModel {
     this.database = db;
   }
 
-  async findAllForUser(currentUserId: number): Promise<IFileViewModel[]> {
+  async findAllForUser(currentUserId: number): Promise<IFile[]> {
     const data = await this.database.query(`SELECT * FROM files
       WHERE ${currentUserId}=ANY(available_for)
       OR public_file = true OR author_id = ${currentUserId}`);
-    const filesView = await Promise.all(
-      data.rows.map(async (file) => {
-        const author_id = file.author_id;
-        const authorData = await this.database.query(
-          "SELECT * FROM users where id = $1",
-          [author_id]
-        );
-        const username = authorData.rows[0].username;
-        const {
-          id,
-          filename,
-          filetype,
-          available_for,
-          public_file,
-          creation_date,
-          update_date,
-        } = file;
-
-        return {
-          id,
-          filename,
-          filetype,
-          author: username,
-          available_for,
-          public_file,
-          creation_date,
-          update_date,
-        };
-      })
-    );
-    return filesView;
+    const requestedFiles = data.rows;
+    return requestedFiles;
   }
 
-  async findAll(): Promise<IFileViewModel[]> {
+  async findAll(): Promise<IFile[]> {
     const data = await this.database.query("SELECT * FROM files");
-    const filesView = await Promise.all(
-      data.rows.map(async (file) => {
-        const author_id = file.author_id;
-        const authorData = await this.database.query(
-          "SELECT * FROM users where id = $1",
-          [author_id]
-        );
-        const username = authorData.rows[0].username;
-        const {
-          id,
-          filename,
-          filetype,
-          available_for,
-          public_file,
-          creation_date,
-          update_date,
-        } = file;
-
-        return {
-          id,
-          filename,
-          filetype,
-          author: username,
-          available_for,
-          public_file,
-          creation_date,
-          update_date,
-        };
-      })
-    );
-    return filesView;
+    const requestedFiles = data.rows;
+    return requestedFiles;
   }
 
   async findByIdForUser(
     id: number,
     currentUserId: number
-  ): Promise<IFileViewModel | null> {
+  ): Promise<IFile | null> {
     const data = await this.database.query(
       `SELECT * FROM files WHERE id = $1
         AND (${currentUserId} = ANY(available_for) OR public_file = true OR author_id = ${currentUserId})`,
@@ -120,43 +59,11 @@ export class FilesModel implements IFilesModel {
       return null;
     }
     const requestedFile = data.rows[0];
-    const { author_id } = requestedFile;
-    const authorData = await this.database.query(
-      "SELECT * FROM users where id = $1",
-      [author_id]
-    );
-    const username = authorData.rows[0].username;
-    const {
-      filename,
-      filetype,
-      available_for,
-      public_file,
-      creation_date,
-      update_date,
-      mimetype,
-      thumbnail_path,
-      filepath,
-    } = requestedFile;
 
-    const fileView = {
-      id,
-      filename,
-      filetype,
-      author: username,
-      available_for,
-      public_file,
-      creation_date,
-      update_date,
-      mimetype,
-      thumbnail_path,
-      filepath,
-    };
-    return fileView;
+    return requestedFile;
   }
 
-    async findById(
-    id: number,
-  ): Promise<IFileViewModel | null> {
+  async findById(id: number): Promise<IFile | null> {
     const data = await this.database.query(
       `SELECT * FROM files WHERE id = $1`,
       [id]
@@ -165,41 +72,13 @@ export class FilesModel implements IFilesModel {
       return null;
     }
     const requestedFile = data.rows[0];
-    const { author_id } = requestedFile;
-    const authorData = await this.database.query(
-      "SELECT * FROM users where id = $1",
-      [author_id]
-    );
-    const username = authorData.rows[0].username;
-    const {
-      filename,
-      filetype,
-      available_for,
-      public_file,
-      creation_date,
-      update_date,
-      mimetype,
-      thumbnail_path,
-      filepath,
-    } = requestedFile;
-
-    const fileView = {
-      id,
-      filename,
-      filetype,
-      author: username,
-      available_for,
-      public_file,
-      creation_date,
-      update_date,
-      mimetype,
-      thumbnail_path,
-      filepath,
-    };
-    return fileView;
+    return requestedFile;
   }
 
-  async removeByIdForUser(currentUserId: number, id: number): Promise<IFile | null> {
+  async removeByIdForUser(
+    currentUserId: number,
+    id: number
+  ): Promise<IFile | null> {
     const fileData = await this.database.query(
       "SELECT * FROM files WHERE id = $1",
       [id]
@@ -215,7 +94,7 @@ export class FilesModel implements IFilesModel {
     return null;
   }
 
-    async removeById(id: number): Promise<IFile | null> {
+  async removeById(id: number): Promise<IFile | null> {
     const fileData = await this.database.query(
       "SELECT * FROM files WHERE id = $1",
       [id]
@@ -230,7 +109,6 @@ export class FilesModel implements IFilesModel {
     }
     return null;
   }
-
 
   async create(
     userId: number,
@@ -265,7 +143,11 @@ export class FilesModel implements IFilesModel {
     return createdFile.rows[0];
   }
 
-  async updateForUser(currentUserId: number, id: number, data: IFileInputModel) {
+  async updateForUser(
+    currentUserId: number,
+    id: number,
+    data: IFileInputModel
+  ) {
     const { available_for, public_file } = data;
     const update_date = new Date().toISOString();
     const wasUpdated = await this.database.query(
@@ -277,7 +159,7 @@ export class FilesModel implements IFilesModel {
     return !!wasUpdated;
   }
 
-    async update(id: number, data: IFileInputModel) {
+  async update(id: number, data: IFileInputModel) {
     const { available_for, public_file } = data;
     const update_date = new Date().toISOString();
     const wasUpdated = await this.database.query(
