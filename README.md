@@ -18,6 +18,11 @@ Backend:
 - Express
 - PostgresQL
 
+Deploy:
+
+- nginx
+- Docker
+
 ---
 
 **Возможности приложения:**  
