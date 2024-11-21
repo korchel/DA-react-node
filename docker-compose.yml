@@ -1,5 +1,6 @@
 volumes:
   database-volume:
+  upload:
 
 networks:
   mynetwork:
@@ -50,8 +51,7 @@ services:
       - "8080:8080"
     env_file: ./.env
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - upload:/app/public
     environment:
       - NODE_ENV=production
       - URL=$URL
@@ -76,8 +76,5 @@ services:
     restart: always
     ports:
       - "3000:3000"
-    volumes:
-      - /app/node_modules
-      - ./frontend:/app
     networks:
       - mynetwork

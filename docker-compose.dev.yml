@@ -1,5 +1,6 @@
 volumes:
   database-volume:
+  upload:
 
 services:
   database:
@@ -32,6 +33,7 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
+      - upload:/app/public
     environment:
       - NODE_ENV=development
       - URL=http://localhost:3000
