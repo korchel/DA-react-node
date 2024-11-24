@@ -4,7 +4,7 @@ import { IFile } from '../interfaces';
 export const filesApi = createApi({
   reducerPath: 'files',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.URL}/api/files`,
+    baseUrl: `api/files`,
     credentials: 'include',
   }),
   tagTypes: ['files', 'file'],

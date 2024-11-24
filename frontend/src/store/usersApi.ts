@@ -5,7 +5,7 @@ import { IEditUserForm } from '../components/ModalComponent/user/userUpdateSchem
 export const usersApi = createApi({
   reducerPath: 'users',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.URL}/api/users`,
+    baseUrl: `api/users`,
     credentials: 'include',
   }),
   tagTypes: ['users', 'user'],

@@ -5,7 +5,7 @@ import { IDocForm } from '../components/ModalComponent/document/docFormSchema';
 export const docsApi = createApi({
   reducerPath: 'documents',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.URL}/api/documents`,
+    baseUrl: `api/documents`,
     credentials: 'include',
   }),
   tagTypes: ['docs', 'doc'],
