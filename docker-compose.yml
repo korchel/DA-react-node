@@ -10,7 +10,7 @@ services:
     image: nginx:stable-alpine
     container_name: server
     ports:
-      - "80:80"
+      - '80:80'
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
@@ -28,14 +28,12 @@ services:
     volumes:
       - database-volume:/var/lib/postgresql/data
       - ./backend/scripts:/docker-entrypoint-initdb.d
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       POSTGRES_DB: $POSTGRES_DB
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 3s
       retries: 5
@@ -48,7 +46,7 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     ports:
-      - "8080:8080"
+      - '8080:8080'
     env_file: ./.env
     volumes:
       - upload:/app/public
@@ -75,6 +73,6 @@ services:
     container_name: frontend
     restart: always
     ports:
-      - "3000:3000"
+      - '3000:3000'
     networks:
       - mynetwork
