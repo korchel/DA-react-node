@@ -1,4 +1,4 @@
-const apiPath = `api`;
+const apiPath = `${process.env.URL}/api`;
 
 export const routes = {
   loginRoute: () => '/login',
