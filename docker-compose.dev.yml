@@ -36,7 +36,7 @@ services:
       - upload:/app/public
     environment:
       - NODE_ENV=development
-      - URL=http://localhost:3000
+      - URL=$URL
       - DB_HOST=database
       - DB_USER=$POSTGRES_USER
       - DB_PASSWORD=$POSTGRES_PASSWORD

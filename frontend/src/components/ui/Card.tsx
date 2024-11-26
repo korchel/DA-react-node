@@ -10,7 +10,8 @@ export const Card = ({ children, className }: ICard) => (
   <div
     className={clsx(
       className,
-      `md:w-1/2 p-4 rounded-md shadow-lg 
+      `flex flex-col
+      md:w-1/2 p-4 rounded-md shadow-lg 
     bg-white dark:bg-secondaryDark`,
     )}
   >
@@ -28,7 +29,7 @@ Card.Body = ({
 }: {
   children: ReactNode;
   className?: string;
-}) => <div className={clsx(className, 'mt-5')}>{children}</div>;
+}) => <div className={clsx(className, 'mt-5 h-full min-h-0')}>{children}</div>;
 
 Card.Footer = ({ children }) => (
   <div className='flex flex-col xs:flex-row justify-between gap-1 mt-5 bg-white dark:bg-secondaryDark'>

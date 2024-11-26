@@ -53,7 +53,7 @@ export const UploadFile = () => {
     const fomrData = new FormData();
     fomrData.append('params', JSON.stringify(data.params));
     fomrData.append('file', data.file);
-    console.log(data.file);
+
     uploadFile(fomrData)
       .unwrap()
       .then(() => {

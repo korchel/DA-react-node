@@ -16,7 +16,7 @@ export const Layout = ({ children }) => {
     >
       <Header className='h-12 sm:h-16 md:h-24 sticky top-0 px-2 sm:px-5 md:px-8 peer' />
       <main className='h-[calc(100%-48px)] sm:h-[calc(100%-64px)] md:h-[calc(100%-96px)] p-2 sm:p-5 md:p-8'>
-        <div className='h-full   flex flex-col items-center box-border '>
+        <div className='h-full flex flex-col items-center box-border '>
           {children}
         </div>
         <ModalComponent />

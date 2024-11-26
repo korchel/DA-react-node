@@ -20,7 +20,7 @@ const DocumentDetailsPage = () => {
   const dispatch = useDispatch();
 
   const { data: doc, isLoading } = getDoc(id);
-  console.log(doc?.available_for);
+
   const ability = defineAbilityFor({
     user: { ...currentUser, isAuthenticated },
     entity: { author: doc?.author },
@@ -39,14 +39,14 @@ const DocumentDetailsPage = () => {
   }
 
   return (
-    <Card>
+    <Card className='h-full min-h-0'>
       <Card.Header>
         {t('documents.detailsPage.title') + ' '}
         <span className='text-highlight'>{doc?.title}</span>
       </Card.Header>
-      <Card.Body className=''>
+      <Card.Body>
         {doc && (
-          <>
+          <div className='h-full flex flex-col'>
             <Item
               title={t('documents.detailsPage.number')}
               content={doc.number}
@@ -74,10 +74,12 @@ const DocumentDetailsPage = () => {
               title={t('documents.detailsPage.type')}
               content={t(`documents.type.${doc.type}`)}
             />
-            <div className='font-bold'>
+            <div className='font-bold '>
               {t('documents.detailsPage.content')}
             </div>
-            <div className='overflow-y-auto h-72 my-2'>{doc.content}</div>
+            <div className='my-2 overflow-hidden overflow-y-auto'>
+              {doc.content}
+            </div>
             <Item
               title={t('documents.detailsPage.creationDate')}
               content={convirtDate(doc?.creation_date, i18n.language)}
@@ -86,7 +88,7 @@ const DocumentDetailsPage = () => {
               title={t('documents.detailsPage.updateDate')}
               content={convirtDate(doc?.update_date, i18n.language)}
             />
-          </>
+          </div>
         )}
       </Card.Body>
       <Card.Footer>

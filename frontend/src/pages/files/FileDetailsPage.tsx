@@ -42,7 +42,7 @@ const FileDetailsPage = () => {
       .then((blob) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        console.log(blob);
+
         a.href = url;
         a.download = file?.filename as string;
         a.click();
@@ -61,7 +61,7 @@ const FileDetailsPage = () => {
   if (isLoading) {
     return <Spinner className='h-[100%]' />;
   }
-  console.log(file?.filetype);
+
   return (
     <Card>
       <Card.Header>
